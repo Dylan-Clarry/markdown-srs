@@ -64,3 +64,15 @@ model VerificationToken {
 
     @@unique([identifier, token])
 }
+
+// Card Database
+model Deck {
+    id            String    @id @default(cuid())
+    userid        String    @id @default(cuid())
+    name          String
+}
+
+model card {
+    id            String    @id @default(cuid())
+    deckid        String    @id @default(cuid())
+}

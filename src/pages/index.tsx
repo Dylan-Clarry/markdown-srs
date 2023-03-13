@@ -6,30 +6,36 @@ export default function Home() {
     return <main>loading...</main>;
   }
   return (
-    <main>
+    <main className="flex flex-col items-center">
       <h1>Yolki</h1>
-      <div>
-        {session ? (
-          <>
-            <p>Hi {session.user?.name}</p>
-            <button
-              onClick={() => {
-                signOut().catch(console.log);
-              }}
-            >
-              Sign Out
-            </button>
-          </>
-        ) : (
+      <Login session={session} />
+    </main>
+  );
+}
+
+function Login({ session }: { session: any }) {
+  return (
+    <div>
+      {session ? (
+        <>
+          <p>Hi {session.user?.name}</p>
           <button
             onClick={() => {
-              signIn("discord").catch(console.log);
+              signOut().catch(console.log);
             }}
           >
-            Sign In
+            Sign Out
           </button>
-        )}
-      </div>
-    </main>
+        </>
+      ) : (
+        <button
+          onClick={() => {
+            signIn("discord").catch(console.log);
+          }}
+        >
+          Sign In
+        </button>
+      )}
+    </div>
   );
 }
