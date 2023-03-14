@@ -45,9 +45,11 @@ function LoginButton({ session }: { session: any }) {
                     Sign In
                 </button>
             )}
-            <div className="pt-10">
-                <DeckList />
-            </div>
+            {session ? (
+                <div className="pt-10">
+                    <DeckList />
+                </div>
+            ) : null}
         </div>
     );
 }
@@ -64,7 +66,9 @@ function DeckList() {
             {deckList?.map((deck, idx) => {
                 return (
                     <div key={idx}>
-                        <h1><u>{deck.name}</u></h1>
+                        <h1>
+                            <u>{deck.name}</u>
+                        </h1>
                     </div>
                 );
             })}
