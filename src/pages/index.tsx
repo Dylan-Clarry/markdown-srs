@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { api } from "../utils/api";
 
@@ -13,6 +14,12 @@ export default function Home() {
             <h1 className="text-3xl">Yolki</h1>
             <div className="pt-10">
                 <LoginButton session={session} />
+                {session ? (
+                    <div className="pt-10">
+                        <Form />
+                        <DeckList />
+                    </div>
+                ) : null}
             </div>
         </main>
     );
@@ -26,7 +33,7 @@ function LoginButton({ session }: { session: any }) {
                     <p className="mb-4 text-center">Hi {session.user?.name}</p>
                     <button
                         type="button"
-                        className="block rounded-md bg-neutral-800 py-3 px-6 hover:bg-neutral-700"
+                        className="mx-auto block rounded-md bg-neutral-800 py-3 px-6 hover:bg-neutral-700"
                         onClick={() => {
                             signOut().catch(console.log);
                         }}
@@ -37,7 +44,7 @@ function LoginButton({ session }: { session: any }) {
             ) : (
                 <button
                     type="button"
-                    className="block rounded-md bg-neutral-800 py-3 px-6 hover:bg-neutral-700"
+                    className="mx-auto block rounded-md bg-neutral-800 py-3 px-6 hover:bg-neutral-700"
                     onClick={() => {
                         signIn("discord").catch(console.log);
                     }}
@@ -45,12 +52,41 @@ function LoginButton({ session }: { session: any }) {
                     Sign In
                 </button>
             )}
-            {session ? (
-                <div className="pt-10">
-                    <DeckList />
-                </div>
-            ) : null}
         </div>
+    );
+}
+
+function Form() {
+    const [newDeckName, setNewDeckName] = useState("");
+    const createDeck = api.deck.createDeck.useMutation();
+
+    return (
+        <form
+            className="flex gap-2"
+            onSubmit={(event) => {
+                event.preventDefault();
+                createDeck.mutate({
+                    name: newDeckName,
+                });
+                setNewDeckName("");
+            }}
+        >
+            <input
+                type="text"
+                className="rounded-md border-2 border-zinc-800 bg-neutral-900 px-2 py-2 focus:outline-none"
+                placeholder="New Deck Name"
+                minLength={1}
+                maxLength={100}
+                value={newDeckName}
+                onChange={(event) => setNewDeckName(event.target.value)}
+            />
+            <button
+                type="submit"
+                className="rounded-md border-2 border-zinc-800 p-2 focus:outline-none"
+            >
+                Submit
+            </button>
+        </form>
     );
 }
 
@@ -62,7 +98,7 @@ function DeckList() {
     }
 
     return (
-        <div className="flex flex-col gap-4 text-center">
+        <div className="flex flex-col gap-4 text-center mt-4">
             {deckList?.map((deck, idx) => {
                 return (
                     <div key={idx}>
