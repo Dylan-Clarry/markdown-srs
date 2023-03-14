@@ -58,7 +58,18 @@ function LoginButton({ session }: { session: any }) {
 
 function Form() {
     const [newDeckName, setNewDeckName] = useState("");
-    const createDeck = api.deck.createDeck.useMutation();
+    const utils = api.useContext();
+    const createDeck = api.deck.createDeck.useMutation({
+        onMutate: async(newEntry) => {
+            utils.deck.getAllDecks.cancel();
+            utils.deck.getAllDecks.setData(undefined, (prevEntries) => {
+                return prevEntries ? [newEntry, ...prevEntries] : [newEntry];
+            });
+        },
+        onSettled: async () => {
+            await utils.deck.getAllDecks.invalidate();
+        }
+    });
 
     return (
         <form
@@ -98,12 +109,20 @@ function DeckList() {
     }
 
     return (
-        <div className="flex flex-col gap-4 text-center mt-4">
+        <div className="mt-4 flex flex-col gap-4 text-center">
             {deckList?.map((deck, idx) => {
                 return (
                     <div key={idx}>
                         <h1>
-                            <u>{deck.name}</u>
+                            <u className="mr-2">{deck.name}</u>
+                            <button
+                                className="rounded-md border-2 border-zinc-800 p-2 focus:outline-none"
+                                onClick={() => {
+                                    console.log("hello with " + deck.id);
+                                }}
+                            >
+                                Delete
+                            </button>
                         </h1>
                     </div>
                 );
