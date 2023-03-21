@@ -60,15 +60,15 @@ function Form() {
     const [newDeckName, setNewDeckName] = useState("");
     const utils = api.useContext();
     const createDeck = api.deck.createDeck.useMutation({
-        onMutate: async(newEntry) => {
-            utils.deck.getAllDecks.cancel();
-            utils.deck.getAllDecks.setData(undefined, (prevEntries) => {
+        onMutate: async (newEntry) => {
+            utils.deck.getAllDeckNames.cancel();
+            utils.deck.getAllDeckNames.setData(undefined, (prevEntries) => {
                 return prevEntries ? [newEntry, ...prevEntries] : [newEntry];
             });
         },
         onSettled: async () => {
             await utils.deck.getAllDecks.invalidate();
-        }
+        },
     });
 
     return (
@@ -103,9 +103,19 @@ function Form() {
 
 function DeckList() {
     const { data: deckList, isLoading } = api.deck.getAllDecks.useQuery();
+    const utils = api.useContext();
+    const deleteDeck = api.deck.deleteDeck.useMutation({
+        onSettled: async () => {
+            await utils.deck.invalidate();
+        },
+    });
 
     if (isLoading) {
-        return <div>Fetching decks...</div>;
+        return (
+            <div className="mt-4 flex flex-col gap-4 text-center">
+                Fetching decks...
+            </div>
+        );
     }
 
     return (
@@ -119,6 +129,9 @@ function DeckList() {
                                 className="rounded-md border-2 border-zinc-800 p-2 focus:outline-none"
                                 onClick={() => {
                                     console.log("hello with " + deck.id);
+                                    deleteDeck.mutate({
+                                        id: deck.id
+                                    });
                                 }}
                             >
                                 Delete

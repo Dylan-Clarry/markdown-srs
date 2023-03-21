@@ -1,10 +1,24 @@
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure, protectedProcedure } from "../trpc";
 
-const deckByNameSchema = z.object({ name: z.string() });
-const deckByIdSchema = z.object({ id: z.string() });
+export const deckByNameSchema = z.object({ name: z.string() });
+export const deckByIdSchema = z.object({ id: z.string() });
 
 export const deckRouter = createTRPCRouter({
+    getAllDeckNames: publicProcedure.query(async ({ ctx }) => {
+        try {
+            return await ctx.prisma.deck.findMany({
+                select: {
+                    name: true,
+                },
+                orderBy: {
+                    createdAt: "desc",
+                },
+            });
+        } catch (err) {
+            console.log("error", err);
+        }
+    }),
     getAllDecks: publicProcedure.query(async ({ ctx }) => {
         try {
             return await ctx.prisma.deck.findMany({
