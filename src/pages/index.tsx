@@ -6,9 +6,7 @@ import Markdown from "~/components/Markdown";
 export default function Home() {
     const { data: session, status } = useSession();
     if (status === "loading") {
-        return (
-            <main className="flex flex-col items-center pt-8">loading...</main>
-        );
+        return <main className="flex flex-col items-center pt-8">loading...</main>;
     }
     return (
         <main className="flex flex-col items-center pt-8">
@@ -21,7 +19,6 @@ export default function Home() {
                         <DeckList />
                     </div>
                 ) : null}
-                <DeckList />
             </div>
         </main>
     );
@@ -113,11 +110,7 @@ function DeckList() {
     });
 
     if (isLoading) {
-        return (
-            <div className="mt-4 flex flex-col gap-4 text-center">
-                Fetching decks...
-            </div>
-        );
+        return <div className="mt-4 flex flex-col gap-4 text-center">Fetching decks...</div>;
     }
 
     return (
@@ -132,6 +125,7 @@ function DeckList() {
                                 onClick={() => {
                                     deleteDeck.mutate({
                                         id: deck.id,
+                                        name: deck.name,
                                     });
                                 }}
                             >

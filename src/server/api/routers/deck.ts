@@ -1,8 +1,7 @@
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure, protectedProcedure } from "../trpc";
 
-export const deckByNameSchema = z.object({ name: z.string() });
-export const deckByIdSchema = z.object({ id: z.string() });
+export const deckSchema = z.object({ id: z.string(), name: z.string() });
 
 export const deckRouter = createTRPCRouter({
     getAllDeckNames: publicProcedure.query(async ({ ctx }) => {
@@ -35,30 +34,32 @@ export const deckRouter = createTRPCRouter({
         }
     }),
     createDeck: protectedProcedure
-        .input(deckByNameSchema)
+        .input(
+            z.object({
+                name: z.string(),
+            })
+        )
         .mutation(async ({ ctx, input }) => {
             try {
                 await ctx.prisma.deck.create({
                     data: {
-                        ...input,
                         userId: ctx.session.user.id,
+                        ...input,
                     },
                 });
             } catch (err) {
                 console.log(err);
             }
         }),
-    deleteDeck: protectedProcedure
-        .input(deckByIdSchema)
-        .mutation(async ({ ctx, input }) => {
-            try {
-                await ctx.prisma.deck.delete({
-                    where: {
-                        id: input.id,
-                    },
-                });
-            } catch (err) {
-                console.log("error", err);
-            }
-        }),
+    deleteDeck: protectedProcedure.input(deckSchema).mutation(async ({ ctx, input }) => {
+        try {
+            await ctx.prisma.deck.delete({
+                where: {
+                    id: input.id,
+                },
+            });
+        } catch (err) {
+            console.log("error", err);
+        }
+    }),
 });
