@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { api } from "../utils/api";
+import Markdown from "~/components/Markdown";
 
 export default function Home() {
     const { data: session, status } = useSession();
@@ -20,6 +21,7 @@ export default function Home() {
                         <DeckList />
                     </div>
                 ) : null}
+                <Markdown />
             </div>
         </main>
     );
@@ -128,9 +130,8 @@ function DeckList() {
                             <button
                                 className="rounded-md border-2 border-zinc-800 p-2 focus:outline-none"
                                 onClick={() => {
-                                    console.log("hello with " + deck.id);
                                     deleteDeck.mutate({
-                                        id: deck.id
+                                        id: deck.id,
                                     });
                                 }}
                             >
