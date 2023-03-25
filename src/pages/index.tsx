@@ -21,7 +21,7 @@ export default function Home() {
                         <DeckList />
                     </div>
                 ) : null}
-                <Markdown />
+                <DeckList />
             </div>
         </main>
     );

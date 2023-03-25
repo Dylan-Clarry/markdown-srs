@@ -1,4 +1,4 @@
-# Yolki
+# Yolki 🐸
 A Markdown based _spaced repetition system_
 
 ## Roadmap
