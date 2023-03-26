@@ -24,5 +24,5 @@ export default function MarkdownEditor({ initialDoc, onChange }: Props) {
         }
     }, [editorView]);
 
-    return <div className="ml-4 w-5/12" ref={refContainer as RefObject<HTMLDivElement>}></div>;
+    return <div className="w-6/12" ref={refContainer as RefObject<HTMLDivElement>}></div>;
 }

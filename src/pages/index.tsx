@@ -1,7 +1,6 @@
-import { useState } from "react";
 import { signIn, signOut, useSession } from "next-auth/react";
-import { api } from "../utils/api";
 import DeckList from "~/components/DeckList";
+import DeckListForm from "~/components/DeckListForm";
 import Markdown from "~/components/Markdown";
 
 export default function Home() {
@@ -10,15 +9,15 @@ export default function Home() {
         return <main className="mt-4 flex flex-col items-center">loading...</main>;
     }
     return (
-        <main className="mt-4 grid h-full grid-cols-8">
+        <main className="grid h-screen grid-cols-12">
             {session ? (
                 <>
-                    <div className="col-span-1">
-                        <Form />
-                        <DeckList />
+                    <div className="col-span-2 h-full border-r border-neutral-800">
                         <LoginButton session={session} />
+                        <DeckListForm />
+                        <DeckList />
                     </div>
-                    <div className="col-span-7 mt-4">
+                    <div className="col-span-10">
                         <Markdown />
                     </div>
                 </>
@@ -31,10 +30,13 @@ export default function Home() {
 
 function LoginButton({ session }: { session: any }) {
     return (
-        <div>
+        <div className="px-2">
+            <span>
+                <Logo />
+                {session ? session.user?.name : "Yolki"}
+            </span>
             {session ? (
                 <>
-                    <p className="mb-4 text-center">Hi {session.user?.name}</p>
                     <button
                         type="button"
                         className="mx-auto block rounded-md bg-neutral-800 py-3 px-6 hover:bg-neutral-700"
@@ -60,47 +62,6 @@ function LoginButton({ session }: { session: any }) {
     );
 }
 
-function Form() {
-    const [newDeckName, setNewDeckName] = useState("");
-    const utils = api.useContext();
-    const createDeck = api.deck.createDeck.useMutation({
-        onMutate: async (newEntry) => {
-            utils.deck.getAllDeckNames.cancel();
-            utils.deck.getAllDeckNames.setData(undefined, (prevEntries) => {
-                return prevEntries ? [newEntry, ...prevEntries] : [newEntry];
-            });
-        },
-        onSettled: async () => {
-            await utils.deck.getAllDecks.invalidate();
-        },
-    });
-
-    return (
-        <form
-            className="flex gap-2"
-            onSubmit={(event) => {
-                event.preventDefault();
-                createDeck.mutate({
-                    name: newDeckName,
-                });
-                setNewDeckName("");
-            }}
-        >
-            <input
-                type="text"
-                className="rounded-md border-2 border-zinc-800 bg-neutral-900 px-2 py-2 focus:outline-none"
-                placeholder="New Deck Name"
-                minLength={1}
-                maxLength={100}
-                value={newDeckName}
-                onChange={(event) => setNewDeckName(event.target.value)}
-            />
-            <button
-                type="submit"
-                className="rounded-md border-2 border-zinc-800 p-2 focus:outline-none"
-            >
-                Submit
-            </button>
-        </form>
-    );
+function Logo() {
+    return <span className="mr-2 text-xl">🐣</span>;
 }
