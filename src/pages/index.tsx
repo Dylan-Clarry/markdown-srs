@@ -1,25 +1,30 @@
 import { useState } from "react";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { api } from "../utils/api";
+import DeckList from "~/components/DeckList";
 import Markdown from "~/components/Markdown";
 
 export default function Home() {
     const { data: session, status } = useSession();
     if (status === "loading") {
-        return <main className="flex flex-col items-center pt-8">loading...</main>;
+        return <main className="mt-4 flex flex-col items-center">loading...</main>;
     }
     return (
-        <main className="flex flex-col items-center pt-8">
-            <h1 className="text-3xl">Yolki</h1>
-            <div className="pt-10">
-                <LoginButton session={session} />
-                {session ? (
-                    <div className="pt-10">
+        <main className="mt-4 grid h-full grid-cols-8">
+            {session ? (
+                <>
+                    <div className="col-span-1">
                         <Form />
                         <DeckList />
+                        <LoginButton session={session} />
                     </div>
-                ) : null}
-            </div>
+                    <div className="col-span-7 mt-4">
+                        <Markdown />
+                    </div>
+                </>
+            ) : (
+                <LoginButton session={session} />
+            )}
         </main>
     );
 }
@@ -97,44 +102,5 @@ function Form() {
                 Submit
             </button>
         </form>
-    );
-}
-
-function DeckList() {
-    const { data: deckList, isLoading } = api.deck.getAllDecks.useQuery();
-    const utils = api.useContext();
-    const deleteDeck = api.deck.deleteDeck.useMutation({
-        onSettled: async () => {
-            await utils.deck.invalidate();
-        },
-    });
-
-    if (isLoading) {
-        return <div className="mt-4 flex flex-col gap-4 text-center">Fetching decks...</div>;
-    }
-
-    return (
-        <div className="mt-4 flex flex-col gap-4 text-center">
-            {deckList?.map((deck, idx) => {
-                return (
-                    <div key={idx}>
-                        <h1>
-                            <u className="mr-2">{deck.name}</u>
-                            <button
-                                className="rounded-md border-2 border-zinc-800 p-2 focus:outline-none"
-                                onClick={() => {
-                                    deleteDeck.mutate({
-                                        id: deck.id,
-                                        name: deck.name,
-                                    });
-                                }}
-                            >
-                                Delete
-                            </button>
-                        </h1>
-                    </div>
-                );
-            })}
-        </div>
     );
 }
