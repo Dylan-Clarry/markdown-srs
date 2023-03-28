@@ -12,7 +12,7 @@ export default function Home() {
         <main className="grid h-screen grid-cols-12">
             {session ? (
                 <>
-                    <div className="col-span-2 h-full border-r border-neutral-800">
+                    <div className="col-span-2 h-full px-4 border-r border-neutral-800">
                         <LoginButton session={session} />
                         <DeckListForm />
                         <DeckList />
@@ -30,16 +30,16 @@ export default function Home() {
 
 function LoginButton({ session }: { session: any }) {
     return (
-        <div className="px-2">
-            <span>
+        <div className="flex mt-4 w-full items-center justify-between">
+            <span className="flex items-center">
                 <Logo />
-                {session ? session.user?.name : "Yolki"}
+                {session ? session.user?.name : "Markdown SRS"}
             </span>
             {session ? (
                 <>
                     <button
                         type="button"
-                        className="mx-auto block rounded-md bg-neutral-800 py-3 px-6 hover:bg-neutral-700"
+                        className="block rounded-md bg-neutral-800 pt-0.5 pb-1 px-2 hover:bg-neutral-700"
                         onClick={() => {
                             signOut().catch(console.log);
                         }}
@@ -50,7 +50,7 @@ function LoginButton({ session }: { session: any }) {
             ) : (
                 <button
                     type="button"
-                    className="mx-auto block rounded-md bg-neutral-800 py-3 px-6 hover:bg-neutral-700"
+                    className="block rounded-md bg-neutral-800 pt-0.5 pb-1 px-2 hover:bg-neutral-700"
                     onClick={() => {
                         signIn("discord").catch(console.log);
                     }}
@@ -63,5 +63,5 @@ function LoginButton({ session }: { session: any }) {
 }
 
 function Logo() {
-    return <span className="mr-2 text-xl">🐣</span>;
+    return <span className="mr-2 text-xl">🚀</span>;
 }

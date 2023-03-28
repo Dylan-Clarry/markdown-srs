@@ -18,7 +18,7 @@ export default function DeckListForm() {
 
     return (
         <form
-            className="flex p-2 gap-2 justify-between"
+            className="flex mt-3 gap-2 justify-between"
             onSubmit={(event) => {
                 event.preventDefault();
                 createDeck.mutate({

@@ -10,7 +10,7 @@ export default function Markdown() {
     }, []);
 
     return (
-        <div className="flex px-2">
+        <div className="flex mt-4 px-2 gap-2">
             <MarkdownEditor initialDoc={doc} onChange={handleDocChange} />
             <MarkdownView doc={doc} />
         </div>
