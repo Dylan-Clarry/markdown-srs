@@ -1,5 +1,5 @@
-# Yolki
-A Markdown based _spaced repetition system_
+# 🚀Rocket SRS
+A _spaced repetition system_ that uses Markdown to create flashcards _blazingly fast_
 
 ## Roadmap
 - MVP: Deck and card creation + card review
