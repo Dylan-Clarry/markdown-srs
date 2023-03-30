@@ -8,12 +8,14 @@ export default function Home() {
     if (status === "loading") {
         return <main className="mt-4 flex flex-col items-center">loading...</main>;
     }
+
+    const name = session?.user.name ? session?.user.name : "";
     return (
         <main className="flex h-screen">
             {session ? (
                 <>
                     <div className="h-full w-60 border-r border-neutral-800 px-4">
-                        <LoginButton session={session} />
+                        <LoginButton name={name} />
                         <DeckListForm />
                         <DeckList />
                     </div>
@@ -22,14 +24,14 @@ export default function Home() {
                     </div>
                 </>
             ) : (
-                <div className="flex w-full items-center justify-center flex-col">
+                <div className="flex w-full flex-col items-center justify-center">
                     <span className="flex items-center">
                         <Logo />
-                        <h1 className="text-2xl pr-2">Rocket SRS</h1>
+                        <h1 className="pr-2 text-2xl">Rocket SRS</h1>
                     </span>
                     <button
                         type="button"
-                        className="block rounded-md bg-neutral-800 mt-4 text-xl px-3 pt-1 pb-2 hover:bg-neutral-700"
+                        className="mt-4 block rounded-md bg-neutral-800 px-3 pt-1 pb-2 text-xl hover:bg-neutral-700"
                         onClick={() => {
                             signIn("discord").catch(console.log);
                         }}
@@ -42,36 +44,22 @@ export default function Home() {
     );
 }
 
-function LoginButton({ session }: { session: any }) {
+function LoginButton({ name }: { name: string }) {
     return (
         <div className="mt-4 flex w-full items-center justify-between">
             <span className="flex items-center">
                 <Logo />
-                {session ? session.user?.name : "Rocket SRS"}
+                <p>{name}</p>
             </span>
-            {session ? (
-                <>
-                    <button
-                        type="button"
-                        className="block rounded-md bg-neutral-800 px-2 pt-0.5 pb-1 hover:bg-neutral-700"
-                        onClick={() => {
-                            signOut().catch(console.log);
-                        }}
-                    >
-                        Sign Out
-                    </button>
-                </>
-            ) : (
-                <button
-                    type="button"
-                    className="block rounded-md bg-neutral-800 px-2 pt-0.5 pb-1 hover:bg-neutral-700"
-                    onClick={() => {
-                        signIn("discord").catch(console.log);
-                    }}
-                >
-                    Sign In
-                </button>
-            )}
+            <button
+                type="button"
+                className="block rounded-md bg-neutral-800 px-2 pt-0.5 pb-1 hover:bg-neutral-700"
+                onClick={() => {
+                    signOut().catch(console.log);
+                }}
+            >
+                Sign Out
+            </button>
         </div>
     );
 }

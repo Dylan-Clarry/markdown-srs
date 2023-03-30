@@ -29,7 +29,7 @@ export default function DeckListForm() {
         >
             <input
                 type="text"
-                className="w-full rounded-md border-2 border-zinc-800 bg-neutral-900 px-1 py-1 focus:outline-none"
+                className="w-full rounded-md border-2 border-zinc-800 bg-neutral-900 pt-0.5 pb-1 px-1 focus:outline-none"
                 placeholder="Deck Name"
                 minLength={1}
                 maxLength={25}
@@ -38,9 +38,9 @@ export default function DeckListForm() {
             />
             <button
                 type="submit"
-                className="rounded-md border-2 border-zinc-800 p-2 focus:outline-none"
+                className="rounded-md border-2 border-zinc-800 pt-0.5 pb-1 px-1 focus:outline-none"
             >
-                Submit
+                Create
             </button>
         </form>
     );
