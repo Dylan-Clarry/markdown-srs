@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect, MutableRefObject } from "react";
 import { basicSetup } from "codemirror";
 import { EditorState } from "@codemirror/state";
-import { EditorView, keymap, lineNumbers, highlightActiveLine, highlightActiveLineGutter } from "@codemirror/view";
+import { EditorView, keymap, lineNumbers, highlightActiveLine, highlightActiveLineGutter, drawSelection } from "@codemirror/view";
 import { indentOnInput, bracketMatching } from "@codemirror/language";
 import { markdown, markdownLanguage } from "@codemirror/lang-markdown";
 import { javascript } from "@codemirror/lang-javascript";
@@ -23,6 +23,7 @@ export default function useCodeMirror<T extends Element>({
     const [editorView, setEditorView] = useState<EditorView>();
     const userExtensionSettings = [
         vim(),
+        drawSelection(),
         oneDark
     ];
 
