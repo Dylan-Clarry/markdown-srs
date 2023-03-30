@@ -9,7 +9,6 @@ export default function Markdown() {
         + "---back---"
         + "\n".repeat(3)
         + "```js\nHello World\n```"
-        + "\n".repeat(5)
     );
     const [docBack, setDocBack] = useState<string>("");
 
@@ -21,10 +20,10 @@ export default function Markdown() {
 
     return (
         <div className="flex">
-            <div className="mt-4 w-full h-full flex gap-2 px-2">
+            <div className="mt-4 w-full c-markdown-col h-full flex gap-2 px-2">
                 <MarkdownEditor initialDoc={docFront} onChange={handleDocChange} />
             </div>
-            <div className="mt-4 w-full flex flex-col gap-2 px-2">
+            <div className="mt-4 w-full c-markdown-col flex flex-col gap-2 px-2">
                 <MarkdownView doc={docFront} />
                 <MarkdownView doc={docBack} />
             </div>

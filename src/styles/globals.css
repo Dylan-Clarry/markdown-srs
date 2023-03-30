@@ -9,3 +9,12 @@ body, html {
 body {
     @apply bg-neutral-900 text-neutral-100;
 }
+
+.c-markdown-col {
+    /* full view height minus mt-4 */
+    height: calc(100vh - 1rem);
+}
+
+.cm-editor {
+    height: calc(100vh - 2.75rem);
+}
