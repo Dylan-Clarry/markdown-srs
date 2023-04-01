@@ -22,6 +22,7 @@ export default function DeckList() {
                         <li key={idx} className="mb-2">
                             <p className="mr-2">{deck.name}</p>
                             <ul className="ml-4 pl-2 border-l border-neutral-800">
+                                <li className="mt-1 hover:cursor-pointer rounded-md px-2 pt-0.5 pb-1 hover:bg-neutral-800">Review</li>
                                 <li className="mt-1 hover:cursor-pointer rounded-md px-2 pt-0.5 pb-1 hover:bg-neutral-800">Create</li>
                                 <li className="mt-1 hover:cursor-pointer rounded-md px-2 pt-0.5 pb-1 hover:bg-neutral-800">Manage</li>
                                 <li className="mt-1 hover:cursor-pointer rounded-md px-2 pt-0.5 pb-1 hover:bg-neutral-800">

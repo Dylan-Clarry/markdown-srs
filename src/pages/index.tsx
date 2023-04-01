@@ -2,7 +2,6 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import DeckList from "~/components/DeckList";
 import DeckListForm from "~/components/DeckListForm";
 import Markdown from "~/components/Markdown";
-import Toolbar from "~/components/Toolbar";
 
 export default function Home() {
     const { data: session, status } = useSession();
@@ -22,7 +21,6 @@ export default function Home() {
                     </div>
                     <div className="flex-1 h-full">
                         <div className="h-full">
-                            <Toolbar />
                             <Markdown />
                         </div>
                     </div>
@@ -50,7 +48,7 @@ export default function Home() {
 
 function LoginButton({ name }: { name: string }) {
     return (
-        <div className="mt-4 flex w-full items-center justify-between">
+        <div className="mt-2 flex w-full items-center justify-between">
             <span className="flex items-center">
                 <Logo />
                 <p>{name}</p>
