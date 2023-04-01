@@ -15,7 +15,6 @@ export default function DeckList() {
 
     return (
         <div className="mt-3 flex flex-col gap-4">
-            <h2>Decks</h2>
             <ul>
                 {deckList?.map((deck, idx) => {
                     return (

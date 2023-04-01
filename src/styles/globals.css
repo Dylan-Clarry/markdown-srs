@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+    --top-bar: 5vh;
+    --bot-bar: 7vh;
+    --markdown: calc(100vh - var(--top-bar) - var(--bot-bar));
+}
+
 body, html {
     min-height: 100%;
 }
@@ -10,21 +16,20 @@ body {
     @apply bg-neutral-900 text-neutral-100;
 }
 
-
 .c-top-bar {
-    height: 5vh;
+    height: var(--top-bar);
 }
 
 .c-markdown {
     /* full view height minus mt-4 */
-    height: 90vh;
+    height: var(--markdown);
 }
 
 .c-bot-bar {
-    height: 5vh;
+    height: var(--bot-bar);
 }
 
 .cm-editor {
     /*height: calc(100vh - 4.75rem);*/
-    height: 90vh;
+    height: var(--markdown);
 }
