@@ -79,6 +79,7 @@ model Deck {
 model Card {
     id            String    @id @default(cuid())
     createdAt     DateTime  @default(now())
+    content       String
     deck          Deck      @relation(fields: [deckId], references: [id])
     deckId        String
 }

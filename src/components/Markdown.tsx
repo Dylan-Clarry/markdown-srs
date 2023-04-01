@@ -4,11 +4,11 @@ import MarkdownView from "./MarkdownView";
 
 export default function Markdown() {
     const [docFront, setDocFront] = useState<string>(
-        '```js\nconsole.log("Hello World");\n```'
-        + "\n".repeat(3)
-        + "---back---"
-        + "\n".repeat(3)
-        + "```js\nHello World\n```"
+        '```js\nconsole.log("Hello World");\n```' +
+            "\n".repeat(3) +
+            "---back---" +
+            "\n".repeat(3) +
+            "```js\nHello World\n```"
     );
     const [docBack, setDocBack] = useState<string>("");
 
@@ -19,11 +19,11 @@ export default function Markdown() {
     }, []);
 
     return (
-        <div className="flex">
-            <div className="mt-4 w-full c-markdown-col h-full flex gap-2 px-2">
+        <div className="mt-4 flex">
+            <div className="c-markdown-col flex w-full gap-2 px-2">
                 <MarkdownEditor initialDoc={docFront} onChange={handleDocChange} />
             </div>
-            <div className="mt-4 w-full c-markdown-col flex flex-col gap-2 px-2">
+            <div className="c-markdown-col flex w-full flex-col gap-2 px-2">
                 <MarkdownView doc={docFront} />
                 <MarkdownView doc={docBack} />
             </div>
