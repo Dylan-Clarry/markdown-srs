@@ -3,7 +3,7 @@ import MarkdownEditor from "./MarkdownEditor";
 import MarkdownView from "./MarkdownView";
 import Toolbar from "~/components/Toolbar";
 
-export default function CardEditor() {
+export default function Markdown() {
     const [docFront, setDocFront] = useState<string>(
         '```js\nconsole.log("Hello World");\n```' +
             "\n".repeat(3) +
