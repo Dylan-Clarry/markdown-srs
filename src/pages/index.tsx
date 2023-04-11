@@ -1,7 +1,7 @@
 import { signIn, signOut, useSession } from "next-auth/react";
 import DeckList from "~/components/DeckList";
 import DeckListForm from "~/components/DeckListForm";
-import Markdown from "~/components/Markdown";
+import CardPreview from "~/components/Markdown";
 
 export default function Home() {
     const { data: session, status } = useSession();
@@ -21,7 +21,7 @@ export default function Home() {
                     </div>
                     <div className="flex-1 h-full">
                         <div className="h-full">
-                            <Markdown />
+                            <CardPreview />
                         </div>
                     </div>
                 </>

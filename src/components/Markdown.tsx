@@ -3,7 +3,7 @@ import MarkdownEditor from "./MarkdownEditor";
 import MarkdownView from "./MarkdownView";
 import Toolbar from "~/components/Toolbar";
 
-export default function Markdown() {
+export default function CardEditor() {
     const [docFront, setDocFront] = useState<string>(
         '```js\nconsole.log("Hello World");\n```' +
             "\n".repeat(3) +
@@ -20,7 +20,7 @@ export default function Markdown() {
     }, []);
 
     return (
-        <div className="flex flex-col">
+        <div className="flex flex-col px-4">
             <div className="c-top-bar pt-2 pl-4">
                 <Toolbar />
             </div>
