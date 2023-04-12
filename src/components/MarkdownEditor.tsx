@@ -4,10 +4,11 @@ import useCodeMirror from "~/hooks/useCodeMirror";
 
 interface Props {
     initialDoc: string;
+    keybinding: string;
     onChange: (doc: string) => void;
 }
 
-export default function MarkdownEditor({ initialDoc, onChange }: Props) {
+export default function MarkdownEditor({ initialDoc, keybinding, onChange }: Props) {
     const handleDocChange = useCallback(
         (state: EditorState) => onChange(state.doc.toString()),
         [onChange]

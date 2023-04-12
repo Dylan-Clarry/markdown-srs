@@ -9,6 +9,7 @@ import { defaultKeymap, indentWithTab, history } from "@codemirror/commands";
 import { oneDark } from "@codemirror/theme-one-dark";
 import { languages } from "@codemirror/language-data";
 import { vim } from "@replit/codemirror-vim";
+import { emacs } from "@replit/codemirror-emacs";
 
 interface Props {
     initialDoc: string;
@@ -22,7 +23,7 @@ export default function useCodeMirror<T extends Element>({
     const refContainer = useRef<T>(null);
     const [editorView, setEditorView] = useState<EditorView>();
     const userExtensionSettings = [
-        vim(),
+        emacs(),
         drawSelection(),
         oneDark
     ];

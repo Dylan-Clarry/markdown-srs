@@ -12,6 +12,7 @@ export default function Markdown() {
             "```js\nHello World\n```"
     );
     const [docBack, setDocBack] = useState<string>("");
+    const [keybinding, setKeybinding] = useState<string>("standard");
 
     const handleDocChange = useCallback((newDoc: string) => {
         const splitDoc = newDoc.split("---back---");
@@ -21,8 +22,8 @@ export default function Markdown() {
 
     return (
         <div className="flex flex-col px-4">
-            <div className="c-top-bar pt-2 pl-4">
-                <Toolbar />
+            <div className="c-top-bar pt-2">
+                <Toolbar setKeybinding={setKeybinding} />
             </div>
             <div className="c-markdown md:flex gap-4">
                 <div className="w-full">
@@ -37,8 +38,8 @@ export default function Markdown() {
                     </div>
                 </div>
             </div>
-            <div className="c-bot-bar flex justify-end pr-4">
-                <button className="text-sm bg-neutral-800 hover:bg-neutral-700 rounded-md p-1 mt-3.5 mb-4">Create Card</button>
+            <div className="c-bot-bar flex justify-end">
+                <button className="text-sm bg-green-600 hover:bg-green-500 rounded-md p-1 mt-3.5 mb-4">Create Card</button>
             </div>
         </div>
     );
