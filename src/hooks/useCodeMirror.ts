@@ -13,20 +13,28 @@ import { emacs } from "@replit/codemirror-emacs";
 
 interface Props {
     initialDoc: string;
+    keybinding: string;
     onChange: (state: EditorState) => void;
 }
 
 export default function useCodeMirror<T extends Element>({
     initialDoc,
+    keybinding,
     onChange,
 }: Props): [MutableRefObject<T | null>, EditorView?] {
     const refContainer = useRef<T>(null);
     const [editorView, setEditorView] = useState<EditorView>();
     const userExtensionSettings = [
-        emacs(),
         drawSelection(),
-        oneDark
+        oneDark,
     ];
+    if(keybinding === "vim") {
+        console.log("vim");
+        userExtensionSettings.push(vim());
+    } else if(keybinding === "emacs") {
+        console.log("emacs");
+        userExtensionSettings.push(emacs());
+    }
 
     useEffect(() => {
         if (!refContainer) return;

@@ -16,6 +16,7 @@ export default function MarkdownEditor({ initialDoc, keybinding, onChange }: Pro
 
     const [refContainer, editorView] = useCodeMirror({
         initialDoc: initialDoc,
+        keybinding: keybinding,
         onChange: handleDocChange,
     });
 

@@ -1,7 +1,7 @@
 import { useState, useCallback } from "react";
 import MarkdownEditor from "./MarkdownEditor";
 import MarkdownView from "./MarkdownView";
-import Toolbar from "~/components/Toolbar";
+import MarkdownToolbar from "~/components/MarkdownToolbar";
 
 export default function Markdown() {
     const [docFront, setDocFront] = useState<string>(
@@ -19,15 +19,16 @@ export default function Markdown() {
         setDocFront(splitDoc[0] ? splitDoc[0] : "");
         setDocBack(splitDoc[1] ? splitDoc[1] : "");
     }, []);
+    console.log("keybinding", keybinding);
 
     return (
         <div className="flex flex-col px-4">
             <div className="c-top-bar pt-2">
-                <Toolbar setKeybinding={setKeybinding} />
+                <MarkdownToolbar setKeybinding={setKeybinding} />
             </div>
             <div className="c-markdown md:flex gap-4">
                 <div className="w-full">
-                    <MarkdownEditor initialDoc={docFront} onChange={handleDocChange} />
+                    <MarkdownEditor initialDoc={docFront} keybinding={keybinding} onChange={handleDocChange} />
                 </div>
                 <div className="flex flex-col gap-4 w-full">
                     <div className="markdown-body h-1/2 p-4">
