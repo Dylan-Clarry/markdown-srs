@@ -21,10 +21,14 @@ export default function MarkdownEditor({ initialDoc, keybinding, onChange }: Pro
     });
 
     useEffect(() => {
-        if(editorView) {
+        if (editorView) {
             // do nothing for now...
         }
     }, [editorView]);
 
-    return <div className="w-full" ref={refContainer as RefObject<HTMLDivElement>}></div>;
+    return (
+        <div className="w-full">
+            <div className="w-full" ref={refContainer as RefObject<HTMLDivElement>}></div>
+        </div>
+    );
 }

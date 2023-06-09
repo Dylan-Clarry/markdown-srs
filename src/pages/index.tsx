@@ -19,10 +19,8 @@ export default function Home() {
                         <DeckListForm />
                         <DeckList />
                     </div>
-                    <div className="flex-1 h-full">
-                        <div className="h-full">
-                            <Markdown />
-                        </div>
+                    <div className="h-full flex-1">
+                        <Markdown />
                     </div>
                 </>
             ) : (

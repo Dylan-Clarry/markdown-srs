@@ -15,5 +15,9 @@ export default function RemarkView({ doc }: Props) {
         .use(remarkGfm)
         .use(remarkReact, { createElement: React.createElement as any })
         .processSync(doc).result;
-    return <>{md}</>;
+    return (
+        <div className="markdown-body h-1/2 p-4">
+            <>{md}</>
+        </div>
+    );
 }

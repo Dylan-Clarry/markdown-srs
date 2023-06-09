@@ -22,25 +22,25 @@ export default function Markdown() {
     console.log("keybinding", keybinding);
 
     return (
-        <div className="flex flex-col px-4">
-            <div className="c-top-bar pt-2">
+        <div className="h-full">
+            <div className="flex flex-col px-4">
                 <MarkdownToolbar setKeybinding={setKeybinding} />
-            </div>
-            <div className="c-markdown md:flex gap-4">
-                <div className="w-full">
-                    <MarkdownEditor initialDoc={docFront} keybinding={keybinding} onChange={handleDocChange} />
-                </div>
-                <div className="flex flex-col gap-4 w-full">
-                    <div className="markdown-body h-1/2 p-4">
+                <div className="c-markdown gap-4 md:flex">
+                    <MarkdownEditor
+                        initialDoc={docFront}
+                        keybinding={keybinding}
+                        onChange={handleDocChange}
+                    />
+                    <div className="flex w-full flex-col gap-4">
                         <MarkdownView doc={docFront} />
-                    </div>
-                    <div className="markdown-body h-1/2 p-4">
                         <MarkdownView doc={docBack} />
                     </div>
                 </div>
-            </div>
-            <div className="c-bot-bar flex justify-end">
-                <button className="text-sm bg-green-600 hover:bg-green-500 rounded-md p-1 mt-3.5 mb-4">Create Card</button>
+                <div className="c-bot-bar flex justify-end">
+                    <button className="mt-3.5 mb-4 rounded-md bg-green-600 p-1 text-sm hover:bg-green-500">
+                        Create Card
+                    </button>
+                </div>
             </div>
         </div>
     );

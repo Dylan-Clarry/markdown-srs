@@ -28,7 +28,7 @@ export default function DeckList() {
 
 function CollapsableList(props: {deck: any, idx: number}) {
     const { deck, idx } = props;
-    const [isCollapsed, setIsCollapsed] = useState<boolean>(true);
+    const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
     const handleCollapse = () => {
         setIsCollapsed((isCollapsed) => !isCollapsed);
     };
@@ -44,7 +44,7 @@ function CollapsableList(props: {deck: any, idx: number}) {
             <p className="mr-2" onClick={handleCollapse}> {deck.name}</p>
             <ul
                 className="ml-4 border-l border-neutral-800 pl-2"
-                style={{ visibility: isCollapsed ? "visible" : "collapse" }}
+                style={{ display: isCollapsed ? "block" : "none" }}
             >
                 <li className="mt-1 rounded-md px-2 pt-0.5 pb-1 hover:cursor-pointer hover:bg-neutral-800">Review</li>
                 <li className="mt-1 rounded-md px-2 pt-0.5 pb-1 hover:cursor-pointer hover:bg-neutral-800">Create</li>
