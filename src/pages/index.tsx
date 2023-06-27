@@ -48,7 +48,7 @@ function LoginButton({ name }: { name: string }) {
     return (
         <div className="mt-2 flex w-full items-center justify-between">
             <span className="flex items-center">
-                <span className="mr-2 text-xl">🚀</span>
+                <Logo />
                 <p>{name}</p>
             </span>
             <button
@@ -62,4 +62,8 @@ function LoginButton({ name }: { name: string }) {
             </button>
         </div>
     );
+}
+
+function Logo() {
+    return <span className="mr-2 text-xl">🚀</span>;
 }
