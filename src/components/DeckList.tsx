@@ -1,5 +1,7 @@
 import { api } from "../utils/api";
 import { useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
 
 interface IDeck {
     id: string,
@@ -41,7 +43,7 @@ function CollapsableList(props: {deck: any, idx: number}) {
 
     return (
         <li key={idx} className="mb-2">
-            <p className="mr-2" onClick={handleCollapse}> {deck.name}</p>
+            <p className="mr-2" onClick={handleCollapse}> {deck.name} <FontAwesomeIcon icon={isCollapsed ? faChevronUp : faChevronDown}/></p>
             <ul
                 className="ml-4 border-l border-neutral-800 pl-2"
                 style={{ display: isCollapsed ? "block" : "none" }}
