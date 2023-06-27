@@ -4,13 +4,14 @@ import MarkdownView from "./MarkdownView";
 import MarkdownToolbar from "~/components/MarkdownToolbar";
 
 export default function Markdown() {
-    const [docFront, setDocFront] = useState<string>(
+    const [docFull, setDocFull] = useState<string>(
         '```js\nconsole.log("Hello World");\n```' +
             "\n".repeat(3) +
             "---back---" +
             "\n".repeat(3) +
             "```js\nHello World\n```"
     );
+    const [docFront, setDocFront] = useState<string>("");
     const [docBack, setDocBack] = useState<string>("");
     const [keybinding, setKeybinding] = useState<string>("standard");
 
@@ -19,7 +20,6 @@ export default function Markdown() {
         setDocFront(splitDoc[0] ? splitDoc[0] : "");
         setDocBack(splitDoc[1] ? splitDoc[1] : "");
     }, []);
-    console.log("keybinding", keybinding);
 
     return (
         <div className="h-full">
@@ -27,7 +27,7 @@ export default function Markdown() {
                 <MarkdownToolbar setKeybinding={setKeybinding} />
                 <div className="c-markdown gap-4 md:flex">
                     <MarkdownEditor
-                        initialDoc={docFront}
+                        initialDoc={docFull}
                         keybinding={keybinding}
                         onChange={handleDocChange}
                     />

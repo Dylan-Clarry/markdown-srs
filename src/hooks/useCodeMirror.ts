@@ -73,6 +73,6 @@ export default function useCodeMirror<T extends Element>({
         return () => {
             startView.destroy();
         };
-    }, [refContainer]);
+    }, [refContainer, keybinding]);
     return [refContainer, editorView];
 }
