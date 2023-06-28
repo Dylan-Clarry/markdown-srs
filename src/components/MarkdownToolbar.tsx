@@ -8,8 +8,18 @@ export default function Toolbar({ setKeybinding }: Props) {
     return (
         <div className="c-top-bar pt-2">
             <div className="flex justify-between">
-                <div className="">Deck Name</div>
-                <div className="">
+                <div>
+                    <span className="pr-1">Deck: </span>
+                    <select
+                        className="rounded-md bg-neutral-800 p-1"
+                        onChange={(e) => setKeybinding(e.target.value)}
+                        name="deckselect"
+                        id="deckselect"
+                    >
+                        <option value="standard">Chinese Name</option>
+                    </select>
+                </div>
+                <div>
                     <select
                         className="rounded-md bg-neutral-800 p-1"
                         onChange={(e) => setKeybinding(e.target.value)}
