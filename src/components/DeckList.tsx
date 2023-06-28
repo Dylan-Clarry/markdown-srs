@@ -8,8 +8,8 @@ interface IDeck {
     name: string
 }
 
-export default function DeckList() {
-    const { data: deckList, isLoading } = api.deck.getAllDecks.useQuery();
+export default function DeckList(props: {data: any}) {
+    const { data: deckList, isLoading } = props.data;
 
     if (isLoading) {
         return <div className="mt-3 flex flex-col gap-4 text-center">Fetching decks...</div>;

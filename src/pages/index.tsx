@@ -1,10 +1,12 @@
 import { signIn, signOut, useSession } from "next-auth/react";
+import { api } from "../utils/api";
 import DeckList from "~/components/DeckList";
 import DeckListForm from "~/components/DeckListForm";
 import Markdown from "~/components/Markdown";
 
 export default function Home() {
     const { data: session, status } = useSession();
+    const data = api.deck.getAllDecks.useQuery();
     if (status === "loading") {
         return <main className="mt-4 flex flex-col items-center">loading...</main>;
     }
@@ -17,7 +19,7 @@ export default function Home() {
                     <div className="h-full w-60 border-r border-neutral-800 px-4">
                         <LoginButton name={name} />
                         <DeckListForm />
-                        <DeckList />
+                        <DeckList data={data} />
                     </div>
                     <div className="h-full flex-1">
                         <Markdown />
