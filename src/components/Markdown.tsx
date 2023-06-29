@@ -14,9 +14,9 @@ export default function Markdown(props: { data: any }) {
         "---back---" +
         "\n".repeat(3) +
         "```js\nHello World\n```";
-    const { data: deckList, isLoading } = props.data;
+    const { data: deckList } = props.data;
 
-    const [docFull, setDocFull] = useState<string>(deckTemplate);
+    const [docFull] = useState<string>(deckTemplate);
     const [docFront, setDocFront] = useState<string>("");
     const [docBack, setDocBack] = useState<string>("");
     const [keybinding, setKeybinding] = useState<string>("standard");
@@ -33,14 +33,13 @@ export default function Markdown(props: { data: any }) {
                 <div className="c-top-bar pt-2">
                     <div className="flex justify-between">
                         <div>
-                            <span className="pr-1">Deck: </span>
+                            <span className="pr-1">Deck:</span>
                             <select
                                 className="rounded-md bg-neutral-800 p-1"
                                 onChange={(e) => setKeybinding(e.target.value)}
                                 name="deckselect"
                                 id="deckselect"
                             >
-                                <option value="standard">Chinese Name</option>
                                 {deckList?.map((deck: IDeck) => {
                                     return <option value="standard">{deck.name}</option>;
                                 })}

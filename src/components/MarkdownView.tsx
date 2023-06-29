@@ -9,7 +9,7 @@ interface Props {
     doc: string;
 }
 
-export default function RemarkView({ doc }: Props) {
+export default function MarkdownView({ doc }: Props) {
     const md = unified()
         .use(remarkParse)
         .use(remarkGfm)
