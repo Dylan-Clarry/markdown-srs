@@ -1,6 +1,7 @@
-import { useState, useCallback } from "react";
-import MarkdownEditor from "./MarkdownEditor";
+import { useState, useCallback, useEffect, RefObject } from "react";
 import MarkdownView from "./MarkdownView";
+import { EditorState } from "@codemirror/state";
+import useCodeMirror from "~/hooks/useCodeMirror";
 
 interface IDeck {
     id: string;
@@ -16,16 +17,37 @@ export default function Markdown(props: { data: any }) {
         "```js\nHello World\n```";
     const { data: deckList } = props.data;
 
-    const [docFull] = useState<string>(deckTemplate);
+    const [initialDoc] = useState<string>(deckTemplate);
     const [docFront, setDocFront] = useState<string>("");
     const [docBack, setDocBack] = useState<string>("");
     const [keybinding, setKeybinding] = useState<string>("standard");
 
-    const handleDocChange = useCallback((newDoc: string) => {
+    const handleSplitDoc = useCallback((newDoc: string) => {
         const splitDoc = newDoc.split("---back---");
         setDocFront(splitDoc[0] ? splitDoc[0] : "");
         setDocBack(splitDoc[1] ? splitDoc[1] : "");
     }, []);
+
+    // Markdown Editor
+    const handleDocChange = useCallback(
+        (state: EditorState) => handleSplitDoc(state.doc.toString()),
+        [handleSplitDoc]
+    );
+
+    const [refContainer, editorView] = useCodeMirror({
+        initialDoc: initialDoc,
+        keybinding: keybinding,
+        onChange: handleDocChange,
+    });
+
+    useEffect(() => {
+        if (editorView) {
+            // do nothing for now...
+        }
+    }, [editorView]);
+
+    // MarkdownView
+    
 
     return (
         <div className="h-full">
@@ -61,11 +83,9 @@ export default function Markdown(props: { data: any }) {
                     </div>
                 </div>
                 <div className="c-markdown gap-4 md:flex">
-                    <MarkdownEditor
-                        initialDoc={docFull}
-                        keybinding={keybinding}
-                        onChange={handleDocChange}
-                    />
+                    <div className="w-full">
+                        <div className="w-full" ref={refContainer as RefObject<HTMLDivElement>} ></div>
+                    </div>
                     <div className="flex w-full flex-col gap-4">
                         <MarkdownView doc={docFront} />
                         <MarkdownView doc={docBack} />
