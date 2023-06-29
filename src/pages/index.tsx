@@ -22,7 +22,7 @@ export default function Home() {
                         <DeckList data={data} />
                     </div>
                     <div className="h-full flex-1">
-                        <Markdown />
+                        <Markdown data={data} />
                     </div>
                 </>
             ) : (
