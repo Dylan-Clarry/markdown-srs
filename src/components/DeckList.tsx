@@ -80,6 +80,8 @@ function CollapsableList(props: { deck: any; idx: number }) {
             await utils.deck.invalidate();
         },
     });
+    const [modalIsVisible, setModalIsVisible] = useState<boolean>(false);
+    const handleOnClose = () => setModalIsVisible(false);
 
     return (
         <li key={idx} className="mb-2">
@@ -104,17 +106,20 @@ function CollapsableList(props: { deck: any; idx: number }) {
                     <button
                         className="hover:cursor-pointer"
                         onClick={() => {
-                            deleteDeck.mutate({
-                                id: deck.id,
-                                name: deck.name,
-                            });
+                            setModalIsVisible(true);
                         }}
                     >
                         Delete
                     </button>
                 </li>
-                <DeleteDeckModal />
+                <DeleteDeckModal onClose={handleOnClose} visible={modalIsVisible}/>
             </ul>
         </li>
     );
 }
+
+
+//                            deleteDeck.mutate({
+//                                id: deck.id,
+//                                name: deck.name,
+//                            });
