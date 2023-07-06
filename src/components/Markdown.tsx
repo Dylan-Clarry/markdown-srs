@@ -16,12 +16,10 @@ export default function Markdown(props: { data: any }) {
         "\n".repeat(3) +
         "```js\nHello World\n```";
     const { data: deckList } = props.data;
-
     const [initialDoc] = useState<string>(deckTemplate);
     const [docFront, setDocFront] = useState<string>("");
     const [docBack, setDocBack] = useState<string>("");
     const [keybinding, setKeybinding] = useState<string>("standard");
-
     const handleSplitDoc = useCallback((newDoc: string) => {
         const splitDoc = newDoc.split("---back---");
         setDocFront(splitDoc[0] ? splitDoc[0] : "");
@@ -46,8 +44,8 @@ export default function Markdown(props: { data: any }) {
         }
     }, [editorView]);
 
-    // MarkdownView
-    
+    // Create Cards
+    const createCards = "";
 
     return (
         <div className="h-full">

@@ -31,4 +31,24 @@ export const cardRouter = createTRPCRouter({
             console.log("error", err);
         }
     }),
+    createCards: protectedProcedure
+        .input(
+            z.object({
+                deckId: z.string(),
+                front: z.string(),
+                back: z.string(),
+            })
+        )
+        .mutation(async ({ ctx, input }) => {
+            try {
+                await ctx.prisma.card.create({
+                    data: {
+                        userId: ctx.session.user.id,
+                        ...input,
+                    },
+                });
+            } catch (err) {
+                console.log(err);
+            }
+        }),
 });
