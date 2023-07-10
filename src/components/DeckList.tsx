@@ -62,6 +62,12 @@ export default function DeckList(props: { data: any }) {
                     {deckList?.map((deck: IDeck, idx: number) => {
                         return <CollapsableList deck={deck} idx={idx} />;
                     })}
+                    <li className="mt-1 pl-1 pt-0.5 pb-1 rounded-md bg-cyan-800 w-1/2 hover:cursor-pointer hover:bg-neutral-800">
+                        Manage Cards
+                    </li>
+                    <li className="mt-1 pl-1 pt-0.5 pb-1 rounded-md bg-green-900 w-1/2 hover:cursor-pointer hover:bg-neutral-800">
+                        Create Cards+
+                    </li>
                 </ul>
             </div>
         </>
@@ -97,10 +103,7 @@ function CollapsableList(props: { deck: any; idx: number }) {
                     Review
                 </li>
                 <li className="mt-1 rounded-md px-2 pt-0.5 pb-1 hover:cursor-pointer hover:bg-neutral-800">
-                    Create
-                </li>
-                <li className="mt-1 rounded-md px-2 pt-0.5 pb-1 hover:cursor-pointer hover:bg-neutral-800">
-                    Manage
+                    Rename Deck
                 </li>
                 <li className="mt-1 rounded-md px-2 pt-0.5 pb-1 hover:cursor-pointer hover:bg-neutral-800">
                     <button
@@ -112,12 +115,11 @@ function CollapsableList(props: { deck: any; idx: number }) {
                         Delete
                     </button>
                 </li>
-                <DeleteDeckModal onClose={handleOnClose} visible={modalIsVisible}/>
+                <DeleteDeckModal onClose={handleOnClose} visible={modalIsVisible} />
             </ul>
         </li>
     );
 }
-
 
 //                            deleteDeck.mutate({
 //                                id: deck.id,
