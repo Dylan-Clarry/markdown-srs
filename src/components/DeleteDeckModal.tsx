@@ -1,7 +1,17 @@
 import React, { useState } from "react";
 import { api } from "../utils/api";
 
-export default function DeleteDeckModal({ onClose, visible, deckName, deckId }: { onClose: any; visible: boolean, deckName: string, deckId: number }) {
+export default function DeleteDeckModal({
+    onClose,
+    visible,
+    deckName,
+    deckId,
+}: {
+    onClose: any;
+    visible: boolean;
+    deckName: string;
+    deckId: string;
+}) {
     if (!visible) return null;
     const handleOnClose = (e: any) => {
         if (e.target.id === "delete-deck-modal") {
@@ -18,13 +28,6 @@ export default function DeleteDeckModal({ onClose, visible, deckName, deckId }: 
         },
     });
 
-
-//                            deleteDeck.mutate({
-//                                id: deck.id,
-//                                name: deck.name,
-//                            });
-    console.log(inputDeckName);
-
     return (
         <div
             id="delete-deck-modal"
@@ -34,16 +37,40 @@ export default function DeleteDeckModal({ onClose, visible, deckName, deckId }: 
             <div className="flex flex-col rounded-md bg-neutral-800 p-4">
                 <div className="flex justify-between">
                     <h2 className="p-0.5">Delete Deck</h2>
-                    <button className="p-0.5 rounded-md hover:bg-neutral-700" onClick={onClose}>X</button>
+                    <button className="rounded-md p-0.5 hover:bg-neutral-700" onClick={onClose}>
+                        X
+                    </button>
                 </div>
                 <p className="pt-2">
                     Type the name of the deck in the text box below to delete the deck:
                 </p>
-                <input className="mt-4 rounded-md p-2" onChange={(event) => {setInputDeckName(event.target.value)}} placeholder={deckName} />
+                <input
+                    className="mt-4 rounded-md p-2"
+                    onChange={(event) => {
+                        setInputDeckName(event.target.value);
+                    }}
+                    placeholder={deckName}
+                />
                 {inputDeckName === deckName ? (
-                        <button className="mt-2 p-2 rounded-md text-rose-500 border-2 border-rose-500 hover:bg-neutral-700">Delete this deck</button>
+                    <button
+                        onClick={(event) => {
+                            deleteDeck.mutate({
+                                id: deckId,
+                                name: deckName,
+                            });
+                            onClose
+                        }}
+                        className="mt-2 rounded-md border-2 border-rose-500 p-2 text-rose-500 hover:bg-neutral-700"
+                    >
+                        Delete this deck
+                    </button>
                 ) : (
-                    <button disabled className="mt-2 p-2 rounded-md text-neutral-500 border-2 border-neutral-500">Delete this deck</button>
+                    <button
+                        disabled
+                        className="mt-2 rounded-md border-2 border-neutral-500 p-2 text-neutral-500"
+                    >
+                        Delete this deck
+                    </button>
                 )}
             </div>
         </div>
