@@ -80,12 +80,6 @@ function CollapsableList(props: { deck: any; idx: number }) {
     const handleCollapse = () => {
         setIsCollapsed((isCollapsed) => !isCollapsed);
     };
-    const utils = api.useContext();
-    const deleteDeck = api.deck.deleteDeck.useMutation({
-        onSettled: async () => {
-            await utils.deck.invalidate();
-        },
-    });
     const [modalIsVisible, setModalIsVisible] = useState<boolean>(false);
     const handleOnClose = () => setModalIsVisible(false);
 
@@ -115,13 +109,8 @@ function CollapsableList(props: { deck: any; idx: number }) {
                         Delete
                     </button>
                 </li>
-                <DeleteDeckModal onClose={handleOnClose} visible={modalIsVisible} />
+                <DeleteDeckModal onClose={handleOnClose} visible={modalIsVisible} deckName={deck.name} deckId={deck.id} />
             </ul>
         </li>
     );
 }
-
-//                            deleteDeck.mutate({
-//                                id: deck.id,
-//                                name: deck.name,
-//                            });
