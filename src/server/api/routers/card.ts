@@ -37,6 +37,7 @@ export const cardRouter = createTRPCRouter({
                 deckId: z.string(),
                 front: z.string(),
                 back: z.string(),
+                reviewDate: z.string(),
             })
         )
         .mutation(async ({ ctx, input }) => {
