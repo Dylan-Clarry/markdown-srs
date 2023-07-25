@@ -2,6 +2,7 @@ import { useState, useCallback, useEffect, RefObject } from "react";
 import MarkdownView from "./MarkdownView";
 import { EditorState } from "@codemirror/state";
 import useCodeMirror from "~/hooks/useCodeMirror";
+import { api } from "../utils/api";
 
 interface IDeck {
     id: string;
@@ -45,7 +46,12 @@ export default function Markdown(props: { data: any }) {
     }, [editorView]);
 
     // Create Cards
-    const createCards = "";
+    const utils = api.useContext();
+    const createCards = api.card.createCards.useMutation({
+        onSettled: async() => {
+            await utils.card.invalidate();
+        }
+    });
 
     return (
         <div className="h-full">
@@ -61,7 +67,7 @@ export default function Markdown(props: { data: any }) {
                                 id="deckselect"
                             >
                                 {deckList?.map((deck: IDeck) => {
-                                    return <option value="standard">{deck.name}</option>;
+                                    return <option value={deck.id}>{deck.name}</option>;
                                 })}
                             </select>
                         </div>
@@ -90,7 +96,11 @@ export default function Markdown(props: { data: any }) {
                     </div>
                 </div>
                 <div className="c-bot-bar flex justify-end">
-                    <button className="mt-3.5 mb-4 rounded-md bg-green-600 p-1 text-sm hover:bg-green-500">
+                    <button onClick={(event) => {
+                        createCards.mutate({{
+                            deckId: 
+                        });
+                    }}className="mt-3.5 mb-4 rounded-md bg-green-600 p-1 text-sm hover:bg-green-500">
                         Create Card
                     </button>
                 </div>

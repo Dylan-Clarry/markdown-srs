@@ -29,10 +29,8 @@ export default function useCodeMirror<T extends Element>({
         oneDark,
     ];
     if(keybinding === "vim") {
-        console.log("vim");
         userExtensionSettings.push(vim());
     } else if(keybinding === "emacs") {
-        console.log("emacs");
         userExtensionSettings.push(emacs());
     }
 

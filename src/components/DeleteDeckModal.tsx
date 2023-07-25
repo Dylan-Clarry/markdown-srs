@@ -58,7 +58,7 @@ export default function DeleteDeckModal({
                                 id: deckId,
                                 name: deckName,
                             });
-                            onClose
+                            onClose;
                         }}
                         className="mt-2 rounded-md border-2 border-rose-500 p-2 text-rose-500 hover:bg-neutral-700"
                     >

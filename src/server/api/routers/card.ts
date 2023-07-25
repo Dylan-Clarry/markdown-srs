@@ -45,7 +45,10 @@ export const cardRouter = createTRPCRouter({
                 await ctx.prisma.card.create({
                     data: {
                         userId: ctx.session.user.id,
-                        ...input,
+                        deckId: input.deckId,
+                        front: input.front,
+                        back: input.back,
+                        reviewDate: String(Date.now()),
                     },
                 });
             } catch (err) {
