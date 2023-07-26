@@ -25,22 +25,21 @@ export default function DeckList(props: { data: any }) {
         },
     });
 
+    const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        createDeck.mutate({
+            name: newDeckName,
+        });
+        setNewDeckName("");
+    };
+
     if (isLoading) {
         return <div className="mt-3 flex flex-col gap-4 text-center">Fetching decks...</div>;
     }
 
     return (
         <>
-            <form
-                className="mt-3 flex justify-between gap-2"
-                onSubmit={(event) => {
-                    event.preventDefault();
-                    createDeck.mutate({
-                        name: newDeckName,
-                    });
-                    setNewDeckName("");
-                }}
-            >
+            <form className="mt-3 flex justify-between gap-2" onSubmit={handleFormSubmit}>
                 <input
                     type="text"
                     className="w-full rounded-md border-2 border-zinc-800 bg-neutral-900 px-1 pt-0.5 pb-1 focus:outline-none"
@@ -60,12 +59,12 @@ export default function DeckList(props: { data: any }) {
             <div className="mt-3 flex flex-col gap-4">
                 <ul>
                     {deckList?.map((deck: IDeck, idx: number) => {
-                        return <CollapsableList deck={deck} idx={idx} />;
+                        return <CollapsableList deck={deck} key={idx} />;
                     })}
-                    <li className="mt-1 pl-1 pt-0.5 pb-1 rounded-md bg-cyan-800 w-1/2 hover:cursor-pointer hover:bg-neutral-800">
+                    <li className="mt-1 w-1/2 rounded-md bg-cyan-800 pl-1 pt-0.5 pb-1 hover:cursor-pointer hover:bg-neutral-800">
                         Manage Cards
                     </li>
-                    <li className="mt-1 pl-1 pt-0.5 pb-1 rounded-md bg-green-900 w-1/2 hover:cursor-pointer hover:bg-neutral-800">
+                    <li className="mt-1 w-1/2 rounded-md bg-green-900 pl-1 pt-0.5 pb-1 hover:cursor-pointer hover:bg-neutral-800">
                         Create Cards+
                     </li>
                 </ul>
@@ -109,7 +108,12 @@ function CollapsableList(props: { deck: any; idx: number }) {
                         Delete
                     </button>
                 </li>
-                <DeleteDeckModal onClose={handleOnClose} visible={modalIsVisible} deckName={deck.name} deckId={deck.id} />
+                <DeleteDeckModal
+                    onClose={handleOnClose}
+                    visible={modalIsVisible}
+                    deckName={deck.name}
+                    deckId={deck.id}
+                />
             </ul>
         </li>
     );

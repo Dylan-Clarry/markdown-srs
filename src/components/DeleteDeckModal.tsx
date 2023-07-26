@@ -9,10 +9,10 @@ interface IDeleteDeckModalProps {
 }
 
 export default function DeleteDeckModal({ onClose, visible, deckName, deckId }: IDeleteDeckModalProps) {
-    if (!visible) return null;
-
+    if (!visible){
+        return null;
+    }
     const [inputDeckName, setInputDeckName] = useState<string>("");
-
     const utils = api.useContext();
     const deleteDeck = api.deck.deleteDeck.useMutation({
         onSettled: async () => {
