@@ -1,23 +1,15 @@
 import React, { useState } from "react";
 import { api } from "../utils/api";
 
-export default function DeleteDeckModal({
-    onClose,
-    visible,
-    deckName,
-    deckId,
-}: {
-    onClose: any;
+interface IDeleteDeckModalProps {
+    onClose: () => void;
     visible: boolean;
     deckName: string;
     deckId: string;
-}) {
+}
+
+export default function DeleteDeckModal({ onClose, visible, deckName, deckId }: IDeleteDeckModalProps) {
     if (!visible) return null;
-    const handleOnClose = (e: any) => {
-        if (e.target.id === "delete-deck-modal") {
-            onClose();
-        }
-    };
 
     const [inputDeckName, setInputDeckName] = useState<string>("");
 
@@ -27,6 +19,23 @@ export default function DeleteDeckModal({
             await utils.deck.invalidate();
         },
     });
+
+    const handleOnClose = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+        const targetElement = e.target as HTMLDivElement;
+        if (targetElement.id === "delete-deck-modal") {
+            onClose();
+        }
+    };
+
+    const handleDeleteDeck = () => {
+        if (inputDeckName === deckName) {
+            deleteDeck.mutate({
+                id: deckId,
+                name: deckName,
+            });
+            onClose();
+        }
+    };
 
     return (
         <div
@@ -45,33 +54,24 @@ export default function DeleteDeckModal({
                     Type the name of the deck in the text box below to delete the deck:
                 </p>
                 <input
-                    className="mt-4 rounded-md p-2"
+                    className="mt-4 rounded-md p-2 text-neutral-900"
                     onChange={(event) => {
                         setInputDeckName(event.target.value);
                     }}
                     placeholder={deckName}
                 />
-                {inputDeckName === deckName ? (
-                    <button
-                        onClick={(event) => {
-                            deleteDeck.mutate({
-                                id: deckId,
-                                name: deckName,
-                            });
-                            onClose;
-                        }}
-                        className="mt-2 rounded-md border-2 border-rose-500 p-2 text-rose-500 hover:bg-neutral-700"
-                    >
-                        Delete this deck
-                    </button>
-                ) : (
-                    <button
-                        disabled
-                        className="mt-2 rounded-md border-2 border-neutral-500 p-2 text-neutral-500"
-                    >
-                        Delete this deck
-                    </button>
-                )}
+
+                <button
+                    onClick={handleDeleteDeck}
+                    disabled={inputDeckName !== deckName}
+                    className={`mt-2 rounded-md border-2 ${
+                        inputDeckName !== deckName
+                            ? "border-neutral-500 p-2 text-neutral-500"
+                            : "border-rose-500 p-2 text-rose-500 hover:bg-neutral-700"
+                    }`}
+                >
+                    Delete this deck
+                </button>
             </div>
         </div>
     );

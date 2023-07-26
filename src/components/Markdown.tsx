@@ -53,6 +53,12 @@ export default function Markdown(props: { data: any }) {
         }
     });
 
+    const handleCreateCards = () => {
+       // createCards.mutate({{
+       //     deckId: 1
+       // });
+    }
+
     return (
         <div className="h-full">
             <div className="flex flex-col px-4">
@@ -96,11 +102,7 @@ export default function Markdown(props: { data: any }) {
                     </div>
                 </div>
                 <div className="c-bot-bar flex justify-end">
-                    <button onClick={(event) => {
-                        createCards.mutate({{
-                            deckId: 
-                        });
-                    }}className="mt-3.5 mb-4 rounded-md bg-green-600 p-1 text-sm hover:bg-green-500">
+                    <button onClick={handleCreateCards} className="mt-3.5 mb-4 rounded-md bg-green-600 p-1 text-sm hover:bg-green-500">
                         Create Card
                     </button>
                 </div>
