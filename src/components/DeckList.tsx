@@ -1,13 +1,12 @@
 import { api } from "../utils/api";
+import { z } from "zod";
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
 import DeleteDeckModal from "./DeleteDeckModal";
 
-interface IDeck {
-    id: string;
-    name: string;
-}
+import { deckSchema } from "~/server/api/routers/deck";
+type Deck = z.infer<typeof deckSchema>;
 
 export default function DeckList(props: { data: any }) {
     const { data: deckList, isLoading } = props.data;
@@ -58,7 +57,7 @@ export default function DeckList(props: { data: any }) {
             </form>
             <div className="mt-3 flex flex-col gap-4">
                 <ul>
-                    {deckList?.map((deck: IDeck, idx: number) => {
+                    {deckList?.map((deck: Deck, idx: number) => {
                         return <CollapsableList deck={deck} key={idx} />;
                     })}
                     <li className="mt-1 w-1/2 rounded-md bg-cyan-800 pl-1 pt-0.5 pb-1 hover:cursor-pointer hover:bg-neutral-800">
@@ -73,8 +72,7 @@ export default function DeckList(props: { data: any }) {
     );
 }
 
-function CollapsableList(props: { deck: any; idx: number }) {
-    const { deck, idx } = props;
+function CollapsableList({ deck, key} : { deck: any; key: number }) {
     const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
     const handleCollapse = () => {
         setIsCollapsed((isCollapsed) => !isCollapsed);
@@ -83,7 +81,7 @@ function CollapsableList(props: { deck: any; idx: number }) {
     const handleOnClose = () => setModalIsVisible(false);
 
     return (
-        <li key={idx} className="mb-2">
+        <li key={key} className="mb-2">
             <p className="mr-2" onClick={handleCollapse}>
                 {" "}
                 {deck.name} <FontAwesomeIcon icon={isCollapsed ? faChevronUp : faChevronDown} />

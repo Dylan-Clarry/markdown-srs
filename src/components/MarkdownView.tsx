@@ -5,11 +5,7 @@ import remarkParse from "remark-parse";
 import remarkReact from "remark-react";
 import "github-markdown-css/github-markdown.css";
 
-interface Props {
-    doc: string;
-}
-
-export default function MarkdownView({ doc }: Props) {
+export default function MarkdownView({ doc }: { doc: string }) {
     const md = unified()
         .use(remarkParse)
         .use(remarkGfm)

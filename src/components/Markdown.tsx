@@ -3,24 +3,28 @@ import MarkdownView from "./MarkdownView";
 import { EditorState } from "@codemirror/state";
 import useCodeMirror from "~/hooks/useCodeMirror";
 import { api } from "../utils/api";
+import { z } from "zod";
 
-interface IDeck {
-    id: string;
-    name: string;
+import { deckSchema } from "~/server/api/routers/deck";
+type Deck = z.infer<typeof deckSchema>;
+
+const deckTemplate =
+    '```js\nconsole.log("Hello World");\n```' +
+    "\n".repeat(3) +
+    "---back---" +
+    "\n".repeat(3) +
+    "```js\nHello World\n```";
+
+interface IProps {
+    deckList: Deck[]
 }
 
-export default function Markdown(props: { data: any }) {
-    const deckTemplate =
-        '```js\nconsole.log("Hello World");\n```' +
-        "\n".repeat(3) +
-        "---back---" +
-        "\n".repeat(3) +
-        "```js\nHello World\n```";
-    const { data: deckList } = props.data;
+export default function Markdown({ deckList }: IProps) {
     const [initialDoc] = useState<string>(deckTemplate);
     const [docFront, setDocFront] = useState<string>("");
     const [docBack, setDocBack] = useState<string>("");
     const [keybinding, setKeybinding] = useState<string>("standard");
+    const [deckSelect, setDeckSelect] = useState<string>(String(deckList[0]?.id));
     const handleSplitDoc = useCallback((newDoc: string) => {
         const splitDoc = newDoc.split("---back---");
         setDocFront(splitDoc[0] ? splitDoc[0] : "");
@@ -48,16 +52,20 @@ export default function Markdown(props: { data: any }) {
     // Create Cards
     const utils = api.useContext();
     const createCards = api.card.createCards.useMutation({
-        onSettled: async() => {
+        onSettled: async () => {
             await utils.card.invalidate();
-        }
+        },
     });
 
     const handleCreateCards = () => {
-       // createCards.mutate({{
-       //     deckId: 1
-       // });
-    }
+        createCards.mutate({
+            front: docFront,
+            back: docBack,
+            deckId: deckSelect,
+        });
+        console.log("logged create cards", docFront, docBack, deckSelect);
+        console.log("Deck Id", deckSelect);
+    };
 
     return (
         <div className="h-full">
@@ -68,12 +76,16 @@ export default function Markdown(props: { data: any }) {
                             <span className="pr-1">Deck:</span>
                             <select
                                 className="rounded-md bg-neutral-800 p-1"
-                                onChange={(e) => setKeybinding(e.target.value)}
+                                onChange={(e) => setDeckSelect(e.target.value)}
                                 name="deckselect"
                                 id="deckselect"
                             >
-                                {deckList?.map((deck: IDeck) => {
-                                    return <option value={deck.id}>{deck.name}</option>;
+                                {deckList?.map((deck: Deck) => {
+                                    return (
+                                        <option key={deck.id} value={deck.id}>
+                                            {deck.name}
+                                        </option>
+                                    );
                                 })}
                             </select>
                         </div>
@@ -94,7 +106,10 @@ export default function Markdown(props: { data: any }) {
                 </div>
                 <div className="c-markdown gap-4 md:flex">
                     <div className="w-full">
-                        <div className="w-full" ref={refContainer as RefObject<HTMLDivElement>} ></div>
+                        <div
+                            className="w-full"
+                            ref={refContainer as RefObject<HTMLDivElement>}
+                        ></div>
                     </div>
                     <div className="flex w-full flex-col gap-4">
                         <MarkdownView doc={docFront} />
@@ -102,7 +117,10 @@ export default function Markdown(props: { data: any }) {
                     </div>
                 </div>
                 <div className="c-bot-bar flex justify-end">
-                    <button onClick={handleCreateCards} className="mt-3.5 mb-4 rounded-md bg-green-600 p-1 text-sm hover:bg-green-500">
+                    <button
+                        onClick={handleCreateCards}
+                        className="mt-3.5 mb-4 rounded-md bg-green-600 p-1 text-sm hover:bg-green-500"
+                    >
                         Create Card
                     </button>
                 </div>

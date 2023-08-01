@@ -9,33 +9,37 @@ type Deck = z.infer<typeof deckSchema>;
 
 export default function Home() {
     const { data: session, status } = useSession();
-    const data = api.deck.getAllDecks.useQuery();
+    const deckList = api.deck.getAllDecks.useQuery().data;
     const name = session?.user.name || "";
 
     if (status === "loading") {
         return <main className="mt-4 flex flex-col items-center">loading...</main>;
     }
 
+    if(!deckList) {
+        return <main className="mt-4 flex flex-col items-center">Error fetching decklist</main>;
+    }
+
     return (
         <main className="flex h-screen">
             {
                 session
-                ? <Authenticated data={data} name={name} />
+                ? <Authenticated deckList={deckList} name={name} />
                 : <Unauthenticated />
             }
         </main>
     );
 }
 
-function Authenticated({ data, name }: { data: any; name: string }) {
+function Authenticated({ deckList, name }: { deckList: Deck[]; name: string }) {
     return (
         <>
             <div className="h-full w-60 border-r border-neutral-800 px-4">
                 <LoginButton name={name} />
-                <DeckList data={data} />
+                <DeckList data={deckList} />
             </div>
             <div className="h-full flex-1">
-                <Markdown data={data} />
+                <Markdown deckList={deckList} />
             </div>
         </>
     );
