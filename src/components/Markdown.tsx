@@ -16,7 +16,7 @@ const deckTemplate =
     "```js\nHello World\n```";
 
 interface IProps {
-    deckList: Deck[]
+    deckList: Deck[];
 }
 
 export default function Markdown({ deckList }: IProps) {
@@ -57,14 +57,18 @@ export default function Markdown({ deckList }: IProps) {
         },
     });
 
-    const handleCreateCards = () => {
-        createCards.mutate({
-            front: docFront,
-            back: docBack,
-            deckId: deckSelect,
-        });
-        console.log("logged create cards", docFront, docBack, deckSelect);
-        console.log("Deck Id", deckSelect);
+    const handleCreateCards = async () => {
+        try {
+            await createCards.mutateAsync({
+                front: docFront,
+                back: docBack,
+                deckId: deckSelect,
+            });
+            console.log("logged create cards", docFront, docBack, deckSelect);
+            console.log("Deck Id", deckSelect);
+        } catch (err) {
+            console.log("Error: " + err);
+        }
     };
 
     return (

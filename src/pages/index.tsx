@@ -32,11 +32,12 @@ export default function Home() {
 }
 
 function Authenticated({ deckList, name }: { deckList: Deck[]; name: string }) {
+    console.log("Auth decklist:", deckList);
     return (
         <>
             <div className="h-full w-60 border-r border-neutral-800 px-4">
                 <LoginButton name={name} />
-                <DeckList data={deckList} />
+                <DeckList deckList={deckList} />
             </div>
             <div className="h-full flex-1">
                 <Markdown deckList={deckList} />

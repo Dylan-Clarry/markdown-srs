@@ -8,8 +8,8 @@ import DeleteDeckModal from "./DeleteDeckModal";
 import { deckSchema } from "~/server/api/routers/deck";
 type Deck = z.infer<typeof deckSchema>;
 
-export default function DeckList(props: { data: any }) {
-    const { data: deckList, isLoading } = props.data;
+export default function DeckList({ deckList }: { deckList: Deck[] }) {
+    console.log("DeckList:", deckList);
     const [newDeckName, setNewDeckName] = useState("");
     const utils = api.useContext();
     const createDeck = api.deck.createDeck.useMutation({
@@ -31,10 +31,6 @@ export default function DeckList(props: { data: any }) {
         });
         setNewDeckName("");
     };
-
-    if (isLoading) {
-        return <div className="mt-3 flex flex-col gap-4 text-center">Fetching decks...</div>;
-    }
 
     return (
         <>
