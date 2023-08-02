@@ -2,13 +2,13 @@ import { useState, useCallback, useEffect, RefObject } from "react";
 import MarkdownView from "./MarkdownView";
 import { EditorState } from "@codemirror/state";
 import useCodeMirror from "~/hooks/useCodeMirror";
-import { api } from "../utils/api";
+import { api, RouterOutputs } from "../utils/api";
 import { z } from "zod";
 
 import { deckSchema } from "~/server/api/routers/deck";
-type Deck = z.infer<typeof deckSchema>;
+type Deck = RouterOutputs["deck"]["getAll"][number];
 
-const deckTemplate =
+const cardTemplate =
     '```js\nconsole.log("Hello World");\n```' +
     "\n".repeat(3) +
     "---back---" +
@@ -20,7 +20,7 @@ interface IProps {
 }
 
 export default function Markdown({ deckList }: IProps) {
-    const [initialDoc] = useState<string>(deckTemplate);
+    const [initialDoc] = useState<string>(cardTemplate);
     const [docFront, setDocFront] = useState<string>("");
     const [docBack, setDocBack] = useState<string>("");
     const [keybinding, setKeybinding] = useState<string>("standard");
@@ -52,6 +52,8 @@ export default function Markdown({ deckList }: IProps) {
     // Create Cards
     const utils = api.useContext();
     const createCards = api.card.createCards.useMutation({
+        onMutate: async () => {
+        },
         onSettled: async () => {
             await utils.card.invalidate();
         },

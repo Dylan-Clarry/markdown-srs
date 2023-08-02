@@ -18,7 +18,7 @@ export const deckRouter = createTRPCRouter({
             console.log("error", err);
         }
     }),
-    getAllDecks: publicProcedure.query(async ({ ctx }) => {
+    getAll: publicProcedure.query(async ({ ctx }) => {
         try {
             return await ctx.prisma.deck.findMany({
                 select: {
@@ -30,7 +30,7 @@ export const deckRouter = createTRPCRouter({
                 },
             });
         } catch (err) {
-            console.log("error", err);
+            console.log("error fetching decks (getAll):", err);
         }
     }),
     createDeck: protectedProcedure

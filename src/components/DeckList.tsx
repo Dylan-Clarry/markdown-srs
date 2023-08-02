@@ -1,15 +1,13 @@
-import { api } from "../utils/api";
-import { z } from "zod";
+import { api, RouterOutputs } from "../utils/api";
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
 import DeleteDeckModal from "./DeleteDeckModal";
+import { SingleRouterOutputType } from "~/types/types";
 
-import { deckSchema } from "~/server/api/routers/deck";
-type Deck = z.infer<typeof deckSchema>;
+type Deck = SingleRouterOutputType<RouterOutputs["deck"]["getAll"]>;
 
 export default function DeckList({ deckList }: { deckList: Deck[] }) {
-    console.log("DeckList:", deckList);
     const [newDeckName, setNewDeckName] = useState("");
     const utils = api.useContext();
     const createDeck = api.deck.createDeck.useMutation({
@@ -20,7 +18,7 @@ export default function DeckList({ deckList }: { deckList: Deck[] }) {
             });
         },
         onSettled: async () => {
-            await utils.deck.getAllDecks.invalidate();
+            await utils.deck.getAll.invalidate();
         },
     });
 
@@ -54,7 +52,7 @@ export default function DeckList({ deckList }: { deckList: Deck[] }) {
             <div className="mt-3 flex flex-col gap-4">
                 <ul>
                     {deckList?.map((deck: Deck, idx: number) => {
-                        return <CollapsableList deck={deck} key={idx} />;
+                        return <CollapsableList deck={deck} idx={idx} key={idx} />;
                     })}
                     <li className="mt-1 w-1/2 rounded-md bg-cyan-800 pl-1 pt-0.5 pb-1 hover:cursor-pointer hover:bg-neutral-800">
                         Manage Cards
@@ -68,7 +66,7 @@ export default function DeckList({ deckList }: { deckList: Deck[] }) {
     );
 }
 
-function CollapsableList({ deck, key} : { deck: any; key: number }) {
+function CollapsableList({ deck, idx } : { deck: any; idx: number }) {
     const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
     const handleCollapse = () => {
         setIsCollapsed((isCollapsed) => !isCollapsed);
@@ -77,7 +75,7 @@ function CollapsableList({ deck, key} : { deck: any; key: number }) {
     const handleOnClose = () => setModalIsVisible(false);
 
     return (
-        <li key={key} className="mb-2">
+        <li key={idx} className="mb-2">
             <p className="mr-2" onClick={handleCollapse}>
                 {" "}
                 {deck.name} <FontAwesomeIcon icon={isCollapsed ? faChevronUp : faChevronDown} />
