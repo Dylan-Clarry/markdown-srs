@@ -1,4 +1,4 @@
-import { signIn, signOut, useSession } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 
 export default function Home() {
@@ -6,7 +6,7 @@ export default function Home() {
     const router = useRouter();
 
     if (session) {
-        router.push("/app");
+        router.push("/create");
     }
 
     if (status === "loading") {

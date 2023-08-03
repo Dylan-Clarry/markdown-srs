@@ -2,7 +2,7 @@ import { api } from "../utils/api";
 import CardCreator from "~/components/CardCreator";
 import AppLayout from "~/components/AppLayout";
 
-export default function Home() {
+export default function Create() {
     const deckList = api.deck.getAll.useQuery().data;
 
     if (!deckList) {

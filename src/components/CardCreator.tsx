@@ -64,28 +64,6 @@ export default function CardCreator({ deckList }: { deckList: Deck[] }) {
         });
     };
 
-    // const createCards = api.card.createCards.useMutation({
-    //     onMutate: async () => {
-    //     },
-    //     onSettled: async () => {
-    //         await utils.card.invalidate();
-    //     },
-    // });
-
-    // const handleCreateCards = async () => {
-    //     try {
-    //         await createCards.mutateAsync({
-    //             front: docFront,
-    //             back: docBack,
-    //             deckId: deckSelect,
-    //         });
-    //         setInitialDoc(blankCardTemplate);
-    //         console.log("logged create cards", docFront, docBack, deckSelect);
-    //     } catch (err) {
-    //         console.log("Error: " + err);
-    //     }
-    // };
-
     return (
         <div className="h-full">
             <div className="flex flex-col px-4">
