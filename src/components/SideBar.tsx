@@ -1,4 +1,5 @@
 import { api, RouterOutputs } from "../utils/api";
+import Link from "next/link";
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
@@ -55,7 +56,7 @@ export default function DeckList({ deckList }: { deckList: Deck[] }) {
                         return <CollapsableList deck={deck} idx={idx} key={idx} />;
                     })}
                     <li className="mt-1 w-1/2 rounded-md bg-cyan-800 pl-1 pt-0.5 pb-1 hover:cursor-pointer hover:bg-neutral-800">
-                        Manage Cards
+                        <Link href="/manage">Manage Cards</Link>
                     </li>
                     <li className="mt-1 w-1/2 rounded-md bg-green-900 pl-1 pt-0.5 pb-1 hover:cursor-pointer hover:bg-neutral-800">
                         Create Cards+
