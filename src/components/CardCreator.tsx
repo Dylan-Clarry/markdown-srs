@@ -16,7 +16,7 @@ const cardTemplate =
 
 const blankCardTemplate = "\n".repeat(3) + "---back---" + "\n".repeat(3);
 
-export default function Markdown({ deckList }: { deckList: Deck[] }) {
+export default function CardCreator({ deckList }: { deckList: Deck[] }) {
     const [initialDoc, setInitialDoc] = useState<string>(cardTemplate);
     const [docFront, setDocFront] = useState<string>("");
     const [docBack, setDocBack] = useState<string>("");

@@ -1,11 +1,10 @@
 import { signIn, signOut, useSession } from "next-auth/react";
-import { api } from "../utils/api";
-import { z } from "zod";
-import DeckList from "~/components/DeckList";
-import Markdown from "~/components/Markdown";
+import { api, RouterOutputs } from "../utils/api";
+import SideBar from "~/components/SideBar";
+import CardCreator from "~/components/CardCreator";
+import { SingleRouterOutputType } from "~/types/types";
 
-import { deckSchema } from "~/server/api/routers/deck";
-type Deck = z.infer<typeof deckSchema>;
+type Deck = SingleRouterOutputType<RouterOutputs["deck"]["getAll"]>;
 
 export default function Home() {
     const { data: session, status } = useSession();
@@ -32,15 +31,14 @@ export default function Home() {
 }
 
 function Authenticated({ deckList, name }: { deckList: Deck[]; name: string }) {
-    console.log("Auth decklist:", deckList);
     return (
         <>
             <div className="h-full w-60 border-r border-neutral-800 px-4">
-                <LoginButton name={name} />
-                <DeckList deckList={deckList} />
+                <UsernameAndSignOut name={name} />
+                <SideBar deckList={deckList} />
             </div>
             <div className="h-full flex-1">
-                <Markdown deckList={deckList} />
+                <CardCreator deckList={deckList} />
             </div>
         </>
     );
@@ -66,7 +64,7 @@ function Unauthenticated() {
     );
 }
 
-function LoginButton({ name }: { name: string }) {
+function UsernameAndSignOut({ name }: { name: string }) {
     return (
         <div className="mt-2 flex w-full items-center justify-between">
             <span className="flex items-center">
