@@ -16,7 +16,7 @@ export const cardRouter = createTRPCRouter({
             },
         });
     }),
-    getAllCards: publicProcedure.query(async ({ ctx }) => {
+    getAll: publicProcedure.query(async ({ ctx }) => {
         try {
             return await ctx.prisma.deck.findMany({
                 select: {
@@ -41,15 +41,16 @@ export const cardRouter = createTRPCRouter({
         )
         .mutation(async ({ ctx, input }) => {
             try {
-                await ctx.prisma.card.create({
+                const cards = await ctx.prisma.card.create({
                     data: {
                         userId: ctx.session.user.id,
                         deckId: input.deckId,
                         front: input.front,
                         back: input.back,
-                        reviewDate: String(Date.now()),
+                        reviewDate: new Date(Date.now()),
                     },
                 });
+                return cards;
             } catch (err) {
                 console.log(err);
             }

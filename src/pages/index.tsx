@@ -9,7 +9,7 @@ type Deck = z.infer<typeof deckSchema>;
 
 export default function Home() {
     const { data: session, status } = useSession();
-    const deckList = api.deck.getAllDecks.useQuery().data;
+    const deckList = api.deck.getAll.useQuery().data;
     const name = session?.user.name || "";
 
     if (status === "loading") {

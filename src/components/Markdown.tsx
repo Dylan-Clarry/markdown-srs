@@ -3,10 +3,9 @@ import MarkdownView from "./MarkdownView";
 import { EditorState } from "@codemirror/state";
 import useCodeMirror from "~/hooks/useCodeMirror";
 import { api, RouterOutputs } from "../utils/api";
-import { z } from "zod";
+import { SingleRouterOutputType } from "~/types/types";
 
-import { deckSchema } from "~/server/api/routers/deck";
-type Deck = RouterOutputs["deck"]["getAll"][number];
+type Deck = SingleRouterOutputType<RouterOutputs["deck"]["getAll"]>;
 
 const cardTemplate =
     '```js\nconsole.log("Hello World");\n```' +
@@ -15,16 +14,14 @@ const cardTemplate =
     "\n".repeat(3) +
     "```js\nHello World\n```";
 
-interface IProps {
-    deckList: Deck[];
-}
+const blankCardTemplate = "\n".repeat(3) + "---back---" + "\n".repeat(3);
 
-export default function Markdown({ deckList }: IProps) {
-    const [initialDoc] = useState<string>(cardTemplate);
+export default function Markdown({ deckList }: { deckList: Deck[] }) {
+    const [initialDoc, setInitialDoc] = useState<string>(cardTemplate);
     const [docFront, setDocFront] = useState<string>("");
     const [docBack, setDocBack] = useState<string>("");
     const [keybinding, setKeybinding] = useState<string>("standard");
-    const [deckSelect, setDeckSelect] = useState<string>(String(deckList[0]?.id));
+    const [deckIdSelect, setDeckIdSelect] = useState<string>(String(deckList[0]?.id));
     const handleSplitDoc = useCallback((newDoc: string) => {
         const splitDoc = newDoc.split("---back---");
         setDocFront(splitDoc[0] ? splitDoc[0] : "");
@@ -51,27 +48,43 @@ export default function Markdown({ deckList }: IProps) {
 
     // Create Cards
     const utils = api.useContext();
-    const createCards = api.card.createCards.useMutation({
-        onMutate: async () => {
-        },
-        onSettled: async () => {
-            await utils.card.invalidate();
+    const { mutate: createCards, isLoading: isCreatingCards } = api.card.createCards.useMutation({
+        onSuccess: () => {
+            setInitialDoc(blankCardTemplate);
+            console.log("It did the thing");
+            utils.card.getAll.invalidate();
         },
     });
 
-    const handleCreateCards = async () => {
-        try {
-            await createCards.mutateAsync({
-                front: docFront,
-                back: docBack,
-                deckId: deckSelect,
-            });
-            console.log("logged create cards", docFront, docBack, deckSelect);
-            console.log("Deck Id", deckSelect);
-        } catch (err) {
-            console.log("Error: " + err);
-        }
+    const handleCreateCards = () => {
+        createCards({
+            front: docFront,
+            back: docBack,
+            deckId: deckIdSelect,
+        });
     };
+
+    // const createCards = api.card.createCards.useMutation({
+    //     onMutate: async () => {
+    //     },
+    //     onSettled: async () => {
+    //         await utils.card.invalidate();
+    //     },
+    // });
+
+    // const handleCreateCards = async () => {
+    //     try {
+    //         await createCards.mutateAsync({
+    //             front: docFront,
+    //             back: docBack,
+    //             deckId: deckSelect,
+    //         });
+    //         setInitialDoc(blankCardTemplate);
+    //         console.log("logged create cards", docFront, docBack, deckSelect);
+    //     } catch (err) {
+    //         console.log("Error: " + err);
+    //     }
+    // };
 
     return (
         <div className="h-full">
@@ -82,17 +95,19 @@ export default function Markdown({ deckList }: IProps) {
                             <span className="pr-1">Deck:</span>
                             <select
                                 className="rounded-md bg-neutral-800 p-1"
-                                onChange={(e) => setDeckSelect(e.target.value)}
+                                onChange={(e) => setDeckIdSelect(e.target.value)}
                                 name="deckselect"
                                 id="deckselect"
                             >
-                                {deckList?.map((deck: Deck) => {
-                                    return (
-                                        <option key={deck.id} value={deck.id}>
-                                            {deck.name}
+                                {deckList ? (
+                                    deckList.map((deck: Deck) => (
+                                        <option key={deck?.id} value={deck?.id}>
+                                            {deck?.name}
                                         </option>
-                                    );
-                                })}
+                                    ))
+                                ) : (
+                                    <option>Loading Decks...</option>
+                                )}
                             </select>
                         </div>
                         <div>
@@ -125,6 +140,7 @@ export default function Markdown({ deckList }: IProps) {
                 <div className="c-bot-bar flex justify-end">
                     <button
                         onClick={handleCreateCards}
+                        disabled={isCreatingCards}
                         className="mt-3.5 mb-4 rounded-md bg-green-600 p-1 text-sm hover:bg-green-500"
                     >
                         Create Card
