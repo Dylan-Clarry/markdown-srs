@@ -1,6 +1,7 @@
 import { signOut, useSession } from "next-auth/react";
+import Link from "next/link";
 import { useRouter } from "next/router";
-import { api } from "../utils/api";
+import { api } from "../../utils/api";
 import SideBar from "~/components/SideBar";
 import { useEffect } from "react";
 
@@ -41,7 +42,7 @@ function UsernameAndSignOut({ name }: { name: string }) {
     return (
         <div className="mt-2 flex w-full items-center justify-between">
             <span className="flex items-center">
-                <Logo />
+                <span className="mr-2 text-xl"><Link href="/">🚀</Link></span>
                 <p>{name}</p>
             </span>
             <button
@@ -55,8 +56,4 @@ function UsernameAndSignOut({ name }: { name: string }) {
             </button>
         </div>
     );
-}
-
-function Logo() {
-    return <span className="mr-2 text-xl">🚀</span>;
 }
