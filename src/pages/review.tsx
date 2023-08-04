@@ -1,5 +1,5 @@
 import { api } from "../utils/api";
-import AppLayout from "~/components/AppLayout";
+import AppLayout from "~/pages/layouts/AppLayout";
 
 export default function Review() {
     const deckList = api.deck.getAll.useQuery().data;

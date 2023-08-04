@@ -17,7 +17,7 @@ export default function Home() {
         <main className="flex h-screen">
             <div className="flex w-full flex-col items-center justify-center">
                 <span className="flex items-center">
-                    <Logo />
+                    <span className="mr-2 text-xl">🚀</span>;
                     <h1 className="pr-2 text-2xl">Rocket SRS</h1>
                 </span>
                 <button
@@ -32,8 +32,4 @@ export default function Home() {
             </div>
         </main>
     );
-}
-
-function Logo() {
-    return <span className="mr-2 text-xl">🚀</span>;
 }
