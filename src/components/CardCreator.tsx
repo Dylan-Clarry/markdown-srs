@@ -3,9 +3,8 @@ import MarkdownView from "./MarkdownView";
 import { EditorState } from "@codemirror/state";
 import useCodeMirror from "~/hooks/useCodeMirror";
 import { api, RouterOutputs } from "../utils/api";
-import { SingleRouterOutputType } from "~/types/types";
 
-type Deck = SingleRouterOutputType<RouterOutputs["deck"]["getAll"]>;
+type Deck = RouterOutputs["deck"]["getSchema"];
 
 const cardTemplate =
     '```js\nconsole.log("Hello World");\n```' +

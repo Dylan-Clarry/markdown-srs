@@ -4,6 +4,14 @@ import { createTRPCRouter, publicProcedure, protectedProcedure } from "../trpc";
 export const deckSchema = z.object({ id: z.string(), name: z.string() });
 
 export const deckRouter = createTRPCRouter({
+    getSchema: publicProcedure.query(async ({ ctx }) => {
+        return await ctx.prisma.deck.findFirst({
+            select: {
+                id: true,
+                name: true,
+            },
+        });
+    }),
     getAllDeckNames: publicProcedure.query(async ({ ctx }) => {
         try {
             return await ctx.prisma.deck.findMany({

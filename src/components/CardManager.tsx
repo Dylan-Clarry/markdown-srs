@@ -1,9 +1,8 @@
 import { api, RouterOutputs } from "../utils/api";
-import { SingleRouterOutputType } from "~/types/types";
 import { useState } from "react";
 
-type Deck = SingleRouterOutputType<RouterOutputs["deck"]["getAll"]>;
-type Card = SingleRouterOutputType<RouterOutputs["card"]["getAll"]>;
+type Deck = RouterOutputs["deck"]["getSchema"];
+type Card = RouterOutputs["card"]["getSchema"];
 
 export default function CardManager({ deckList }: { deckList: Deck[] }) {
     const [deckSelect, setDeckSelect] = useState<string>(deckList[0]?.id as string);

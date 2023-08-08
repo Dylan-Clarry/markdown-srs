@@ -4,9 +4,8 @@ import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
 import DeleteDeckModal from "./DeleteDeckModal";
-import { SingleRouterOutputType } from "~/types/types";
 
-type Deck = SingleRouterOutputType<RouterOutputs["deck"]["getAll"]>;
+type Deck = RouterOutputs["deck"]["getSchema"];
 
 export default function DeckList({ deckList }: { deckList: Deck[] }) {
     const [newDeckName, setNewDeckName] = useState("");

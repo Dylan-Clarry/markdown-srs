@@ -2,6 +2,19 @@ import { z } from "zod";
 import { createTRPCRouter, publicProcedure, protectedProcedure } from "../trpc";
 
 export const cardRouter = createTRPCRouter({
+    getSchema: publicProcedure.query(async ({ ctx }) => {
+        return await ctx.prisma.card.findFirst({
+            select: {
+                id: true,
+                createdAt: true,
+                reviewDate: true,
+                front: true,
+                back: true,
+                userId: true,
+                deckId: true,
+            },
+        });
+    }),
     getCardById: publicProcedure.input(z.string()).query(({ ctx, input }) => {
         return ctx.prisma.card.findFirst({
             where: {
