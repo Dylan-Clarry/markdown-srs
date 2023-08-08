@@ -19,7 +19,7 @@ export default function CardManager({ deckList }: { deckList: Deck[] }) {
         <div className="mt-2 flex h-screen">
             <div className="h-full w-60 border-r border-neutral-800 px-4">
                 {deckList.map((deck) => (
-                    <div key={deck?.id}>
+                    <div className="hover:cursor-pointer" key={deck?.id} onClick={() => setDeckSelect(deck?.id as string)}>
                         <h1
                             className={
                                 deckSelect === deck?.id
@@ -33,7 +33,7 @@ export default function CardManager({ deckList }: { deckList: Deck[] }) {
                 ))}
             </div>
             <div className="h-full flex-1">
-                <div>
+                <div className="m-2 p-1 border border-neutral-700">
                     {cardListMap.get(deckSelect)?.map((card: Card) => (
                         <h1>{card?.front}</h1>
                     ))}
