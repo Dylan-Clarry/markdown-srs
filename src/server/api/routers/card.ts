@@ -18,13 +18,16 @@ export const cardRouter = createTRPCRouter({
     }),
     getAll: publicProcedure.query(async ({ ctx }) => {
         try {
-            return await ctx.prisma.deck.findMany({
+            return await ctx.prisma.card.findMany({
                 select: {
                     id: true,
-                    name: true,
+                    front: true,
+                    back: true,
+                    reviewDate: true,
+                    deckId: true,
                 },
                 orderBy: {
-                    createdAt: "desc",
+                    reviewDate: "desc",
                 },
             });
         } catch (err) {
