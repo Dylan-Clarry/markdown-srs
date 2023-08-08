@@ -1,5 +1,6 @@
 import { api } from "../utils/api";
 import AppLayout from "~/pages/layouts/AppLayout";
+import CardManager from "~/components/CardManager";
 
 export default function Manage() {
     const deckList = api.deck.getAll.useQuery().data;
@@ -10,6 +11,7 @@ export default function Manage() {
 
     return (
         <AppLayout>
+            <CardManager deckList={deckList}></CardManager>
         </AppLayout>
     );
 }
