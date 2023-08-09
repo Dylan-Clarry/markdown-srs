@@ -34,7 +34,7 @@ export default function CardManager({ deckList }: { deckList: Deck[] }) {
             <div className="h-full flex-1">
                 <div className="m-2 p-1 border border-neutral-700">
                     {cardListMap.get(deckSelect)?.map((card: Card) => (
-                        <h1>{card?.front}</h1>
+                        <h1 key={card?.id}>{card?.front}</h1>
                     ))}
                 </div>
             </div>

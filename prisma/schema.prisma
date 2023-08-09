@@ -81,8 +81,7 @@ model Card {
   id         String   @id @default(cuid())
   createdAt  DateTime @default(now())
   reviewDate DateTime
-  front      String
-  back       String
+  content    String
   userId     String
   deckId     String
   user       User     @relation(fields: [userId], references: [id])

@@ -8,8 +8,7 @@ export const cardRouter = createTRPCRouter({
                 id: true,
                 createdAt: true,
                 reviewDate: true,
-                front: true,
-                back: true,
+                content: true,
                 userId: true,
                 deckId: true,
             },
@@ -34,8 +33,7 @@ export const cardRouter = createTRPCRouter({
             return await ctx.prisma.card.findMany({
                 select: {
                     id: true,
-                    front: true,
-                    back: true,
+                    content: true,
                     reviewDate: true,
                     deckId: true,
                 },
@@ -51,8 +49,7 @@ export const cardRouter = createTRPCRouter({
         .input(
             z.object({
                 deckId: z.string(),
-                front: z.string(),
-                back: z.string(),
+                content: z.string(),
             })
         )
         .mutation(async ({ ctx, input }) => {
@@ -61,8 +58,7 @@ export const cardRouter = createTRPCRouter({
                     data: {
                         userId: ctx.session.user.id,
                         deckId: input.deckId,
-                        front: input.front,
-                        back: input.back,
+                        content: input.content,
                         reviewDate: new Date(Date.now()),
                     },
                 });

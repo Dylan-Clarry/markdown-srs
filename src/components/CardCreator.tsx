@@ -49,18 +49,16 @@ export default function CardCreator({ deckList }: { deckList: Deck[] }) {
     const utils = api.useContext();
     const { mutate: createCards, isLoading: isCreatingCards } = api.card.createCards.useMutation({
         onSuccess: () => {
-            setInitialDoc(blankCardTemplate);
-            console.log("It did the thing");
             utils.card.getAll.invalidate();
         },
     });
 
     const handleCreateCards = () => {
         createCards({
-            front: docFront,
-            back: docBack,
+            content: initialDoc,
             deckId: deckIdSelect,
         });
+        setInitialDoc(blankCardTemplate);
     };
 
     return (
