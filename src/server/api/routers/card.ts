@@ -17,14 +17,14 @@ export const cardRouter = createTRPCRouter({
     getCardById: publicProcedure.input(z.string()).query(({ ctx, input }) => {
         return ctx.prisma.card.findFirst({
             where: {
-                id: input
+                id: input,
             },
         });
     }),
     getCardsByDeckId: publicProcedure.input(z.string()).query(({ ctx, input }) => {
         return ctx.prisma.card.findMany({
             where: {
-                deckId: input
+                deckId: input,
             },
         });
     }),
@@ -33,8 +33,10 @@ export const cardRouter = createTRPCRouter({
             return await ctx.prisma.card.findMany({
                 select: {
                     id: true,
-                    content: true,
+                    createdAt: true,
                     reviewDate: true,
+                    content: true,
+                    userId: true,
                     deckId: true,
                 },
                 orderBy: {

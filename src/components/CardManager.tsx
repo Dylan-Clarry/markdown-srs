@@ -6,12 +6,26 @@ type Card = RouterOutputs["card"]["getSchema"];
 
 export default function CardManager({ deckList }: { deckList: Deck[] }) {
     const [deckSelect, setDeckSelect] = useState<string>(deckList[0]?.id as string);
-
+    //const { data: cardList } = api.card.getCardsByDeckId.useQuery(deckList.map(deck => deck?.id as string));
+    const { data: cardList } = api.card.getAll.useQuery();
     const cardListMap = new Map<string, Card[] | undefined>();
-    for (let i = 0; i < deckList.length; i++) {
-        const deck = deckList[i];
-        const { data: cardList } = api.card.getCardsByDeckId.useQuery(deck?.id as string);
-        cardListMap.set(deck?.id as string, cardList);
+
+    if(!cardList) {
+        return (
+            <h1>Error loading card data</h1>
+        );
+    }
+
+    for(let i = 0; i < cardList.length; i++) {
+        const card = cardList[i];
+        const deckId = card?.deckId;
+        if(!deckId) {
+            continue;
+        }
+        if(!cardListMap.has(deckId)) {
+            cardListMap.set(deckId, []);
+        }
+        cardListMap.get(deckId)?.push(card);
     }
 
     return (
@@ -34,7 +48,7 @@ export default function CardManager({ deckList }: { deckList: Deck[] }) {
             <div className="h-full flex-1">
                 <div className="m-2 p-1 border border-neutral-700">
                     {cardListMap.get(deckSelect)?.map((card: Card) => (
-                        <h1 key={card?.id}>{card?.front}</h1>
+                        <h1 key={card?.id}>{card?.content}</h1>
                     ))}
                 </div>
             </div>
