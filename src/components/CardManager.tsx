@@ -1,14 +1,24 @@
 import { api, RouterOutputs } from "../utils/api";
 import { useState } from "react";
+import CardEditor from "./CardEditor";
 
 type Deck = RouterOutputs["deck"]["getSchema"];
 type Card = RouterOutputs["card"]["getSchema"];
 
 export default function CardManager({ deckList }: { deckList: Deck[] }) {
+    const utils = api.useContext();
     const [deckSelect, setDeckSelect] = useState<string>(deckList[0]?.id as string);
-    //const { data: cardList } = api.card.getCardsByDeckId.useQuery(deckList.map(deck => deck?.id as string));
     const { data: cardList } = api.card.getAll.useQuery();
+
     const cardListMap = new Map<string, Card[] | undefined>();
+    const initialCardSelect = cardListMap.get(deckSelect)?.[0]?.id as string;
+    const [cardIdSelect, setCardIdSelect] = useState<string | undefined>(initialCardSelect);
+
+    const { mutate: editCard, isLoading } = api.card.edit.useMutation({
+        onSuccess: () => {
+            utils.card.invalidate();
+        },
+    });;
 
     if(!cardList) {
         return (
@@ -19,14 +29,20 @@ export default function CardManager({ deckList }: { deckList: Deck[] }) {
     for(let i = 0; i < cardList.length; i++) {
         const card = cardList[i];
         const deckId = card?.deckId;
-        if(!deckId) {
-            continue;
-        }
+        if(!deckId) continue;
         if(!cardListMap.has(deckId)) {
             cardListMap.set(deckId, []);
         }
         cardListMap.get(deckId)?.push(card);
     }
+
+    const handleEditCard = () => {
+        editCard({
+            id: "",
+            content: "",
+            reviewDate: "",
+        });
+    };
 
     return (
         <div className="mt-2 flex h-screen">
@@ -45,11 +61,16 @@ export default function CardManager({ deckList }: { deckList: Deck[] }) {
                     </div>
                 ))}
             </div>
-            <div className="h-full flex-1">
-                <div className="m-2 p-1 border border-neutral-700">
+            <div className="flex flex-col gap-4 flex-1">
+                <div className="m-2 p-1 h-1/3 border border-neutral-700">
                     {cardListMap.get(deckSelect)?.map((card: Card) => (
                         <h1 key={card?.id}>{card?.content}</h1>
                     ))}
+                </div>
+                <div className="h-2/3">
+                    {
+                        //<CardEditor />
+                    }
                 </div>
             </div>
         </div>

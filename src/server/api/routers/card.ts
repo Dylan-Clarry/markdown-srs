@@ -14,7 +14,7 @@ export const cardRouter = createTRPCRouter({
             },
         });
     }),
-    getCardById: publicProcedure.input(z.string()).query(({ ctx, input }) => {
+    getById: publicProcedure.input(z.string()).query(({ ctx, input }) => {
         return ctx.prisma.card.findFirst({
             where: {
                 id: input,
@@ -66,6 +66,29 @@ export const cardRouter = createTRPCRouter({
                 });
                 return cards;
             } catch (err) {
+                console.log(err);
+            }
+        }),
+    edit: protectedProcedure
+        .input(
+            z.object({
+                id: z.string(),
+                content: z.string(),
+                reviewDate: z.string(),
+            })
+        )
+        .mutation(async ({ ctx, input }) => {
+            try {
+                const card = await ctx.prisma.card.update({
+                    where: {
+                        id: input.id,
+                    },
+                    data: {
+                        ...input,
+                    }
+                });
+                return card;
+            } catch(err) {
                 console.log(err);
             }
         }),
