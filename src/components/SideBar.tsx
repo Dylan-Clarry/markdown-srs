@@ -10,7 +10,7 @@ type Deck = RouterOutputs["deck"]["getSchema"];
 export default function DeckList({ deckList }: { deckList: Deck[] }) {
     const [newDeckName, setNewDeckName] = useState("");
     const utils = api.useContext();
-    const createDeck = api.deck.createDeck.useMutation({
+    const createDeck = api.deck.create.useMutation({
         onMutate: async (newEntry) => {
             utils.deck.getAllDeckNames.cancel();
             utils.deck.getAllDeckNames.setData(undefined, (prevEntries) => {

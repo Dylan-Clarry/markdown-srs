@@ -14,7 +14,7 @@ export default function DeleteDeckModal({ onClose, visible, deckName, deckId }: 
     }
     const [inputDeckName, setInputDeckName] = useState<string>("");
     const utils = api.useContext();
-    const deleteDeck = api.deck.deleteDeck.useMutation({
+    const deleteDeck = api.deck.delete.useMutation({
         onSettled: async () => {
             await utils.deck.invalidate();
         },

@@ -41,7 +41,7 @@ export const deckRouter = createTRPCRouter({
             console.log("error fetching decks (getAll):", err);
         }
     }),
-    createDeck: protectedProcedure
+    create: protectedProcedure
         .input(
             z.object({
                 name: z.string(),
@@ -59,7 +59,7 @@ export const deckRouter = createTRPCRouter({
                 console.log(err);
             }
         }),
-    deleteDeck: protectedProcedure.input(deckSchema).mutation(async ({ ctx, input }) => {
+    delete: protectedProcedure.input(deckSchema).mutation(async ({ ctx, input }) => {
         try {
             await ctx.prisma.deck.delete({
                 where: {

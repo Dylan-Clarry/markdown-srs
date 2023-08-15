@@ -92,4 +92,21 @@ export const cardRouter = createTRPCRouter({
                 console.log(err);
             }
         }),
+    delete: protectedProcedure
+        .input(
+            z.object({
+                id: z.string(),
+            })
+        )
+        .mutation(async({ ctx, input }) => {
+            try {
+                await ctx.prisma.card.delete({
+                    where: {
+                        id: input.id,
+                    }
+                });
+            } catch(err) {
+                console.log("Error deleting deck:", err);
+            }
+        }),
 });
