@@ -79,7 +79,7 @@ export default function CardEditor() {
                         <MarkdownView doc={docBack} />
                     </div>
                 </div>
-                <div className="c-bot-bar flex justify-end gap-2">
+                <div className="c-bot-bar flex justify-end">
                     <button
                         className="mt-3.5 mb-4 rounded-md bg-red-600 p-1 text-sm hover:bg-red-500"
                     >

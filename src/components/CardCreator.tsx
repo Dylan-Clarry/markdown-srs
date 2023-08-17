@@ -3,6 +3,7 @@ import MarkdownView from "./MarkdownView";
 import { EditorState } from "@codemirror/state";
 import useCodeMirror from "~/hooks/useCodeMirror";
 import { api, RouterOutputs } from "../utils/api";
+import MarkdownEditorAndRenderer from "./MarkdownEditorAndRenderer";
 
 type Deck = RouterOutputs["deck"]["getSchema"];
 
@@ -16,34 +17,9 @@ const cardTemplate =
 const blankCardTemplate = "\n".repeat(3) + "---back---" + "\n".repeat(3);
 
 export default function CardCreator({ deckList }: { deckList: Deck[] }) {
-    const [initialDoc, setInitialDoc] = useState<string>(cardTemplate);
-    const [docFront, setDocFront] = useState<string>("");
-    const [docBack, setDocBack] = useState<string>("");
+    const [mainDoc, setMainDoc] = useState<string>(cardTemplate);
     const [keybinding, setKeybinding] = useState<string>("standard");
     const [deckIdSelect, setDeckIdSelect] = useState<string>(String(deckList[0]?.id));
-    const handleSplitDoc = useCallback((newDoc: string) => {
-        const splitDoc = newDoc.split("---back---");
-        setDocFront(splitDoc[0] ? splitDoc[0] : "");
-        setDocBack(splitDoc[1] ? splitDoc[1] : "");
-    }, []);
-
-    // Markdown Editor
-    const handleDocChange = useCallback(
-        (state: EditorState) => handleSplitDoc(state.doc.toString()),
-        [handleSplitDoc]
-    );
-
-    const [markdownEditor, editorView] = useCodeMirror({
-        initialDoc: initialDoc,
-        keybinding: keybinding,
-        onChange: handleDocChange,
-    });
-
-    useEffect(() => {
-        if (editorView) {
-            // do nothing for now...
-        }
-    }, [editorView]);
 
     // Create Cards
     const utils = api.useContext();
@@ -55,10 +31,10 @@ export default function CardCreator({ deckList }: { deckList: Deck[] }) {
 
     const handleCreateCards = () => {
         createCards({
-            content: initialDoc,
+            content: mainDoc,
             deckId: deckIdSelect,
         });
-        setInitialDoc(blankCardTemplate);
+        setMainDoc(blankCardTemplate);
     };
 
     return (
@@ -100,18 +76,7 @@ export default function CardCreator({ deckList }: { deckList: Deck[] }) {
                         </div>
                     </div>
                 </div>
-                <div className="c-markdown gap-4 md:flex">
-                    <div className="w-full">
-                        <div
-                            className="w-full"
-                            ref={markdownEditor as RefObject<HTMLDivElement>}
-                        ></div>
-                    </div>
-                    <div className="flex w-full flex-col gap-4">
-                        <MarkdownView doc={docFront} />
-                        <MarkdownView doc={docBack} />
-                    </div>
-                </div>
+                <MarkdownEditorAndRenderer deckList={deckList} keybinding={"vim"} initialDoc={cardTemplate} mainDoc={mainDoc} setMainDoc={setMainDoc} />
                 <div className="c-bot-bar flex justify-end">
                     <button
                         onClick={handleCreateCards}
