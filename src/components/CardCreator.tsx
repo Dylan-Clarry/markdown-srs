@@ -1,7 +1,4 @@
-import { useState, useCallback, useEffect, RefObject } from "react";
-import MarkdownView from "./MarkdownView";
-import { EditorState } from "@codemirror/state";
-import useCodeMirror from "~/hooks/useCodeMirror";
+import { useState } from "react";
 import { api, RouterOutputs } from "../utils/api";
 import MarkdownEditorAndRenderer from "./MarkdownEditorAndRenderer";
 
@@ -76,7 +73,7 @@ export default function CardCreator({ deckList }: { deckList: Deck[] }) {
                         </div>
                     </div>
                 </div>
-                <MarkdownEditorAndRenderer deckList={deckList} keybinding={"vim"} initialDoc={cardTemplate} mainDoc={mainDoc} setMainDoc={setMainDoc} />
+                <MarkdownEditorAndRenderer keybinding={keybinding} mainDoc={mainDoc} setMainDoc={setMainDoc} />
                 <div className="c-bot-bar flex justify-end">
                     <button
                         onClick={handleCreateCards}

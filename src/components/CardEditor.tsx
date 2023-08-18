@@ -4,8 +4,10 @@ import MarkdownView from "./MarkdownView";
 import { EditorState } from "@codemirror/state";
 import useCodeMirror from "~/hooks/useCodeMirror";
 import { api, RouterOutputs } from "../utils/api";
+import MarkdownEditorAndRenderer from "./MarkdownEditorAndRenderer";
 
 type Deck = RouterOutputs["deck"]["getSchema"];
+type Card = RouterOutputs["card"]["getSchema"];
 
 const cardTemplate =
     '```js\nconsole.log("Hello World");\n```' +
@@ -16,34 +18,26 @@ const cardTemplate =
 
 const blankCardTemplate = "\n".repeat(3) + "---back---" + "\n".repeat(3);
 
-export default function CardEditor() {
-    const [initialDoc, setInitialDoc] = useState<string>(cardTemplate);
-    const [docFront, setDocFront] = useState<string>("");
-    const [docBack, setDocBack] = useState<string>("");
+export default function CardEditor({ card }: { card: Card }) {
+    const [initialDoc, deckId] = card;
+    const [mainDoc, setMainDoc] = useState<string>(cardTemplate);
     const [keybinding, setKeybinding] = useState<string>("standard");
-    const handleSplitDoc = useCallback((newDoc: string) => {
-        const splitDoc = newDoc.split("---back---");
-        setDocFront(splitDoc[0] ? splitDoc[0] : "");
-        setDocBack(splitDoc[1] ? splitDoc[1] : "");
-    }, []);
+    const [deckIdSelect, setDeckIdSelect] = useState<string>(String(deckList[0]?.id));
 
-    // Markdown Editor
-    const handleDocChange = useCallback(
-        (state: EditorState) => handleSplitDoc(state.doc.toString()),
-        [handleSplitDoc]
-    );
-
-    const [markdownEditor, editorView] = useCodeMirror({
-        initialDoc: initialDoc,
-        keybinding: keybinding,
-        onChange: handleDocChange,
+    const ctx = api.useContext();
+    const { mutate: editCard, isLoading: isEditingCards } = api.card.edit.useMutation({
+        onSuccess: () => {
+            ctx.card.getAll.invalidate();
+        },
     });
 
-    useEffect(() => {
-        if (editorView) {
-            // do nothing for now...
-        }
-    }, [editorView]);
+    const handleEditCard = () => {
+        editCard({
+            content: mainDoc,
+            deckId: deckIdSelect,
+        });
+        setMainDoc(blankCardTemplate);
+    };
 
     return (
         <div className="h-full">
@@ -67,18 +61,7 @@ export default function CardEditor() {
                         </div>
                     </div>
                 </div>
-                <div className="c-markdown gap-4 md:flex">
-                    <div className="w-full">
-                        <div
-                            className="w-full"
-                            ref={markdownEditor as RefObject<HTMLDivElement>}
-                        ></div>
-                    </div>
-                    <div className="flex w-full flex-col gap-4">
-                        <MarkdownView doc={docFront} />
-                        <MarkdownView doc={docBack} />
-                    </div>
-                </div>
+                <MarkdownEditorAndRenderer keybinding={keybinding} mainDoc={mainDoc} setMainDoc={setMainDoc} />
                 <div className="c-bot-bar flex justify-end">
                     <button
                         className="mt-3.5 mb-4 rounded-md bg-red-600 p-1 text-sm hover:bg-red-500"
