@@ -23,7 +23,7 @@ export default function CardManager({ deckList }: { deckList: Deck[] }) {
     const { mutate: deleteCard, isLoading: isDeletingCard } = api.card.delete.useMutation({
         onSuccess: () => {
             ctx.card.invalidate();
-        }
+        },
     });
 
     if (!cardList) {
@@ -52,7 +52,7 @@ export default function CardManager({ deckList }: { deckList: Deck[] }) {
         deleteCard({
             id: cardIdSelect,
         });
-        setCardIdSelect('');
+        setCardIdSelect("");
     };
 
     return (
@@ -99,12 +99,15 @@ export default function CardManager({ deckList }: { deckList: Deck[] }) {
                 </div>
                 <div className="h-2/3">
                     {cardIdSelect ? (
-                        <button
-                            className="ml-2 rounded-md bg-red-600 p-1 text-sm hover:bg-red-500"
-                            onClick={handleDeleteCard}
-                        >
-                            Delete Card
-                        </button>
+                        <>
+                            <CardEditor card={card}/>
+                            <button
+                                className="ml-2 rounded-md bg-red-600 p-1 text-sm hover:bg-red-500"
+                                onClick={handleDeleteCard}
+                            >
+                                Delete Card
+                            </button>
+                        </>
                     ) : null}
                 </div>
             </div>

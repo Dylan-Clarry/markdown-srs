@@ -1,4 +1,3 @@
-
 import { useState, useCallback, useEffect, RefObject } from "react";
 import MarkdownView from "./MarkdownView";
 import { EditorState } from "@codemirror/state";
@@ -19,10 +18,12 @@ const cardTemplate =
 const blankCardTemplate = "\n".repeat(3) + "---back---" + "\n".repeat(3);
 
 export default function CardEditor({ card }: { card: Card }) {
-    const [initialDoc, deckId] = card;
-    const [mainDoc, setMainDoc] = useState<string>(cardTemplate);
+    if (!card) {
+        return <h1>Error loading card</h1>;
+    }
+    const deckId = card.deckId;
+    const [mainDoc, setMainDoc] = useState<string>(card.content);
     const [keybinding, setKeybinding] = useState<string>("standard");
-    const [deckIdSelect, setDeckIdSelect] = useState<string>(String(deckList[0]?.id));
 
     const ctx = api.useContext();
     const { mutate: editCard, isLoading: isEditingCards } = api.card.edit.useMutation({
@@ -33,8 +34,9 @@ export default function CardEditor({ card }: { card: Card }) {
 
     const handleEditCard = () => {
         editCard({
+            id: deckId,
             content: mainDoc,
-            deckId: deckIdSelect,
+            reviewDate: "",
         });
         setMainDoc(blankCardTemplate);
     };
@@ -44,8 +46,7 @@ export default function CardEditor({ card }: { card: Card }) {
             <div className="flex flex-col px-4">
                 <div className="c-top-bar pt-2">
                     <div className="flex justify-between">
-                        <div>
-                        </div>
+                        <div></div>
                         <div>
                             <select
                                 className="rounded-md bg-neutral-800 p-1"
@@ -61,14 +62,17 @@ export default function CardEditor({ card }: { card: Card }) {
                         </div>
                     </div>
                 </div>
-                <MarkdownEditorAndRenderer keybinding={keybinding} mainDoc={mainDoc} setMainDoc={setMainDoc} />
+                <MarkdownEditorAndRenderer
+                    keybinding={keybinding}
+                    mainDoc={mainDoc}
+                    setMainDoc={setMainDoc}
+                />
                 <div className="c-bot-bar flex justify-end">
-                    <button
-                        className="mt-3.5 mb-4 rounded-md bg-red-600 p-1 text-sm hover:bg-red-500"
-                    >
+                    <button className="mt-3.5 mb-4 rounded-md bg-red-600 p-1 text-sm hover:bg-red-500">
                         Delete Card
                     </button>
                     <button
+                        disabled={isEditingCards}
                         className="mt-3.5 mb-4 rounded-md bg-green-600 p-1 text-sm hover:bg-green-500"
                     >
                         Apply Changes
