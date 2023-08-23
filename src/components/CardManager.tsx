@@ -8,25 +8,12 @@ type Card = RouterOutputs["card"]["getSchema"];
 export default function CardManager({ deckList }: { deckList: Deck[] }) {
     const ctx = api.useContext();
     const [deckSelect, setDeckSelect] = useState<string>(deckList[0]?.id as string);
-    const { data: cardList }= api.card.getAll.useQuery();
+    const { data: cardList } = api.card.getAll.useQuery();
 
     const deckIdToCardListMap = new Map<string, Card[]>();
     const cardIdToCardMap = new Map<string, Card>();
     const initialCardSelect = deckIdToCardListMap.get(deckSelect)?.[0]?.id as string;
     const [cardIdSelect, setCardIdSelect] = useState<string>(initialCardSelect);
-    console.log("cardIdSelect:", cardIdSelect);
-
-    const { mutate: editCard, isLoading: isEditingCard } = api.card.edit.useMutation({
-        onSuccess: () => {
-            ctx.card.invalidate();
-        },
-    });
-
-    const { mutate: deleteCard, isLoading: isDeletingCard } = api.card.delete.useMutation({
-        onSuccess: () => {
-            ctx.card.invalidate();
-        },
-    });
 
     if (!cardList) {
         return <h1>Error loading card data</h1>;
@@ -34,7 +21,7 @@ export default function CardManager({ deckList }: { deckList: Deck[] }) {
 
     for (let i = 0; i < cardList.length; i++) {
         const card = cardList[i];
-        if(!card) continue;
+        if (!card) continue;
         cardIdToCardMap.set(card.id, card);
 
         const deckId = card.deckId;
@@ -43,21 +30,6 @@ export default function CardManager({ deckList }: { deckList: Deck[] }) {
         }
         deckIdToCardListMap.get(deckId)?.push(card);
     }
-
-    const handleEditCard = () => {
-        editCard({
-            id: cardIdSelect,
-            content: "",
-            reviewDate: "",
-        });
-    };
-
-    const handleDeleteCard = () => {
-        deleteCard({
-            id: cardIdSelect,
-        });
-        setCardIdSelect("");
-    };
 
     return (
         <div className="mt-2 flex h-screen">
@@ -104,13 +76,10 @@ export default function CardManager({ deckList }: { deckList: Deck[] }) {
                 <div className="h-2/3">
                     {cardIdSelect ? (
                         <>
-                            <CardEditor key={cardIdSelect} card={cardIdToCardMap.get(cardIdSelect) as Card | null}/>
-                            <button
-                                className="ml-2 rounded-md bg-red-600 p-1 text-sm hover:bg-red-500"
-                                onClick={handleDeleteCard}
-                            >
-                                Delete Card
-                            </button>
+                            <CardEditor
+                                key={cardIdSelect}
+                                card={cardIdToCardMap.get(cardIdSelect) as Card | null}
+                            />
                         </>
                     ) : null}
                 </div>

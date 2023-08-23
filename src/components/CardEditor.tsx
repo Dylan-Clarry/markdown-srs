@@ -9,9 +9,8 @@ const blankCardTemplate = "\n".repeat(3) + "---back---" + "\n".repeat(3);
 
 export default function CardEditor({ card }: { card: Card }) {
     if (!card) {
-        return <h1>Error loading card</h1>;
+        return;
     }
-    const deckId = card.deckId;
     const [mainDoc, setMainDoc] = useState<string>(card.content);
     const [keybinding, setKeybinding] = useState<string>("standard");
 
@@ -21,6 +20,18 @@ export default function CardEditor({ card }: { card: Card }) {
             ctx.card.getAll.invalidate();
         },
     });
+
+    const { mutate: deleteCard, isLoading: isDeletingCard } = api.card.delete.useMutation({
+        onSuccess: () => {
+            ctx.card.invalidate();
+        },
+    });
+
+    const handleDeleteCard = () => {
+        deleteCard({
+            id: card.id,
+        });
+    };
 
     const handleEditCard = () => {
         editCard({
@@ -56,7 +67,11 @@ export default function CardEditor({ card }: { card: Card }) {
                     setMainDoc={setMainDoc}
                 />
                 <div className="c-bot-bar flex justify-end">
-                    <button className="mt-3.5 mb-4 rounded-md bg-red-600 p-1 text-sm hover:bg-red-500">
+                    <button
+                        onClick={handleDeleteCard}
+                        disabled={isDeletingCard}
+                        className="mt-3.5 mb-4 rounded-md bg-red-600 p-1 text-sm hover:bg-red-500"
+                    >
                         Delete Card
                     </button>
                     <button
