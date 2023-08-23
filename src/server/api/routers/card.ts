@@ -74,7 +74,6 @@ export const cardRouter = createTRPCRouter({
             z.object({
                 id: z.string(),
                 content: z.string(),
-                reviewDate: z.string(),
             })
         )
         .mutation(async ({ ctx, input }) => {
@@ -87,6 +86,7 @@ export const cardRouter = createTRPCRouter({
                         ...input,
                     }
                 });
+                console.log("Edited Card:", card);
                 return card;
             } catch(err) {
                 console.log(err);

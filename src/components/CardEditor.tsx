@@ -8,7 +8,6 @@ type Card = RouterOutputs["card"]["getSchema"];
 const blankCardTemplate = "\n".repeat(3) + "---back---" + "\n".repeat(3);
 
 export default function CardEditor({ card }: { card: Card }) {
-    console.log("The Card:", card?.content);
     if (!card) {
         return <h1>Error loading card</h1>;
     }
@@ -25,11 +24,9 @@ export default function CardEditor({ card }: { card: Card }) {
 
     const handleEditCard = () => {
         editCard({
-            id: deckId,
+            id: card.id,
             content: mainDoc,
-            reviewDate: "",
         });
-        setMainDoc(blankCardTemplate);
     };
 
     return (
@@ -64,6 +61,7 @@ export default function CardEditor({ card }: { card: Card }) {
                     </button>
                     <button
                         disabled={isEditingCards}
+                        onClick={handleEditCard}
                         className="mt-3.5 mb-4 rounded-md bg-green-600 p-1 text-sm hover:bg-green-500"
                     >
                         Apply Changes
