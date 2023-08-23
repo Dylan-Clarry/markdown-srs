@@ -1,25 +1,35 @@
-export function sm2(grade: number, repetition: number, eFactor: number, interval: number) {
+export type cardData = {
+    repetition: number,
+    eFactor: number,
+    interval: number,
+};
+
+export function sm2(grade: number, { repetition, eFactor, interval }: cardData): cardData {
+    let newRepetition: number;
+    let newInterval: number;
+    let newEFactor: number;
+
     if(grade >= 3) {
         if(repetition === 0) {
-            interval = 1;
+            newInterval = 1;
         } else if(repetition === 1) {
-            interval = 6;
+            newInterval = 6;
         } else {
-            interval = Math.round(interval * eFactor);
+            newInterval = Math.round(interval * eFactor);
         }
-        repetition++;
+        newRepetition = repetition++;
     } else {
-        repetition = 0;
-        interval = 0;
+        newRepetition = 0;
+        newInterval = 1;
     }
-    eFactor = eFactor + (0.1 - (5 - grade) * (0.08 + (5 - grade) * 0.02));
-    if(eFactor < 1.3) {
-        eFactor = 1.3;
+    newEFactor = eFactor + (0.1 - (5 - grade) * (0.08 + (5 - grade) * 0.02));
+    if(newEFactor < 1.3) {
+        newEFactor = 1.3;
     }
 
     return {
-        repitition: repetition,
-        ef: eFactor,
-        interval: interval,
-    }
+        repetition: newRepetition,
+        eFactor: newEFactor,
+        interval: newInterval,
+    };
 }

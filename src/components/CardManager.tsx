@@ -8,11 +8,13 @@ type Card = RouterOutputs["card"]["getSchema"];
 export default function CardManager({ deckList }: { deckList: Deck[] }) {
     const ctx = api.useContext();
     const [deckSelect, setDeckSelect] = useState<string>(deckList[0]?.id as string);
-    const { data: cardList } = api.card.getAll.useQuery();
+    const { data: cardList }= api.card.getAll.useQuery();
 
-    const cardListMap = new Map<string, Card[] | undefined>();
-    const initialCardSelect = cardListMap.get(deckSelect)?.[0]?.id as string;
+    const deckIdToCardListMap = new Map<string, Card[]>();
+    const cardIdToCardMap = new Map<string, Card>();
+    const initialCardSelect = deckIdToCardListMap.get(deckSelect)?.[0]?.id as string;
     const [cardIdSelect, setCardIdSelect] = useState<string>(initialCardSelect);
+    console.log("cardIdSelect:", cardIdSelect);
 
     const { mutate: editCard, isLoading: isEditingCard } = api.card.edit.useMutation({
         onSuccess: () => {
@@ -32,12 +34,14 @@ export default function CardManager({ deckList }: { deckList: Deck[] }) {
 
     for (let i = 0; i < cardList.length; i++) {
         const card = cardList[i];
-        const deckId = card?.deckId;
-        if (!deckId) continue;
-        if (!cardListMap.has(deckId)) {
-            cardListMap.set(deckId, []);
+        if(!card) continue;
+        cardIdToCardMap.set(card.id, card);
+
+        const deckId = card.deckId;
+        if (!deckIdToCardListMap.has(deckId)) {
+            deckIdToCardListMap.set(deckId, []);
         }
-        cardListMap.get(deckId)?.push(card);
+        deckIdToCardListMap.get(deckId)?.push(card);
     }
 
     const handleEditCard = () => {
@@ -78,7 +82,7 @@ export default function CardManager({ deckList }: { deckList: Deck[] }) {
             </div>
             <div className="flex flex-1 flex-col gap-4">
                 <div className="m-2 h-1/3 border border-neutral-700 p-1">
-                    {cardListMap.get(deckSelect)?.map((card: Card) => (
+                    {deckIdToCardListMap.get(deckSelect)?.map((card: Card) => (
                         <div
                             className="hover:cursor-pointer"
                             key={card?.id}
@@ -100,7 +104,7 @@ export default function CardManager({ deckList }: { deckList: Deck[] }) {
                 <div className="h-2/3">
                     {cardIdSelect ? (
                         <>
-                            <CardEditor card={card}/>
+                            <CardEditor key={cardIdSelect} card={cardIdToCardMap.get(cardIdSelect) as Card | null}/>
                             <button
                                 className="ml-2 rounded-md bg-red-600 p-1 text-sm hover:bg-red-500"
                                 onClick={handleDeleteCard}

@@ -1,23 +1,14 @@
-import { useState, useCallback, useEffect, RefObject } from "react";
-import MarkdownView from "./MarkdownView";
-import { EditorState } from "@codemirror/state";
-import useCodeMirror from "~/hooks/useCodeMirror";
+import { useState } from "react";
 import { api, RouterOutputs } from "../utils/api";
 import MarkdownEditorAndRenderer from "./MarkdownEditorAndRenderer";
 
 type Deck = RouterOutputs["deck"]["getSchema"];
 type Card = RouterOutputs["card"]["getSchema"];
 
-const cardTemplate =
-    '```js\nconsole.log("Hello World");\n```' +
-    "\n".repeat(3) +
-    "---back---" +
-    "\n".repeat(3) +
-    "```js\nHello World\n```";
-
 const blankCardTemplate = "\n".repeat(3) + "---back---" + "\n".repeat(3);
 
 export default function CardEditor({ card }: { card: Card }) {
+    console.log("The Card:", card?.content);
     if (!card) {
         return <h1>Error loading card</h1>;
     }
