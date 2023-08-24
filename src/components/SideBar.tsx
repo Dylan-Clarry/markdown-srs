@@ -66,7 +66,7 @@ export default function DeckList({ deckList }: { deckList: Deck[] }) {
     );
 }
 
-function CollapsableList({ deck, idx } : { deck: any; idx: number }) {
+function CollapsableList({ deck, idx }: { deck: any; idx: number }) {
     const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
     const handleCollapse = () => {
         setIsCollapsed((isCollapsed) => !isCollapsed);
@@ -85,7 +85,7 @@ function CollapsableList({ deck, idx } : { deck: any; idx: number }) {
                 style={{ display: isCollapsed ? "block" : "none" }}
             >
                 <li className="mt-1 rounded-md px-2 pt-0.5 pb-1 hover:cursor-pointer hover:bg-neutral-800">
-                    Review
+                    <Link href={"review/" + deck.id}>Review</Link>
                 </li>
                 <li className="mt-1 rounded-md px-2 pt-0.5 pb-1 hover:cursor-pointer hover:bg-neutral-800">
                     Rename Deck
