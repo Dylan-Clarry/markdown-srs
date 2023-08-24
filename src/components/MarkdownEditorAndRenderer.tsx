@@ -2,9 +2,6 @@ import { useState, useCallback, useEffect, RefObject } from "react";
 import MarkdownView from "./MarkdownView";
 import { EditorState } from "@codemirror/state";
 import useCodeMirror from "~/hooks/useCodeMirror";
-import { api, RouterOutputs } from "../utils/api";
-
-type Deck = RouterOutputs["deck"]["getSchema"];
 
 interface IProps {
     keybinding: string;
