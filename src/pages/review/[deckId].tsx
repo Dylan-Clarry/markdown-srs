@@ -18,7 +18,7 @@ export default function Review() {
     return (
         <AppLayout>
             {cardList.map((card) => {
-                return <h1>{card.content}</h1>;
+                return <h1 key={card.id}>{card.content}</h1>;
             })}
         </AppLayout>
     );

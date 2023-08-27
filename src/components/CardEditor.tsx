@@ -2,14 +2,13 @@ import { useState } from "react";
 import { api, RouterOutputs } from "../utils/api";
 import MarkdownEditorAndRenderer from "./MarkdownEditorAndRenderer";
 
-type Deck = RouterOutputs["deck"]["getSchema"];
 type Card = RouterOutputs["card"]["getSchema"];
 
 const blankCardTemplate = "\n".repeat(3) + "---back---" + "\n".repeat(3);
 
 export default function CardEditor({ card }: { card: Card }) {
     if (!card) {
-        return;
+        return null;
     }
     const [mainDoc, setMainDoc] = useState<string>(card.content);
     const [keybinding, setKeybinding] = useState<string>("standard");
