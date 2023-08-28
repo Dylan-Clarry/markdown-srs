@@ -54,12 +54,16 @@ export default function DeckList({ deckList }: { deckList: Deck[] }) {
                     {deckList?.map((deck: Deck, idx: number) => {
                         return <CollapsableList deck={deck} idx={idx} key={idx} />;
                     })}
-                    <li className="mt-1 w-1/2 rounded-md bg-cyan-700 pl-1 pt-0.5 pb-1 hover:cursor-pointer hover:bg-cyan-800">
-                        <Link href="/manage">Manage Cards</Link>
-                    </li>
-                    <li className="mt-1 w-1/2 rounded-md bg-green-700 pl-1 pt-0.5 pb-1 hover:cursor-pointer hover:bg-green-800">
-                        <Link href="/create">Create Cards+</Link>
-                    </li>
+                    <Link href="/manage">
+                        <li className="mt-1 w-1/2 rounded-md bg-cyan-700 pl-1 pt-0.5 pb-1 hover:cursor-pointer hover:bg-cyan-800">
+                            Manage Cards
+                        </li>
+                    </Link>
+                    <Link href="/create">
+                        <li className="mt-1 w-1/2 rounded-md bg-green-700 pl-1 pt-0.5 pb-1 hover:cursor-pointer hover:bg-green-800">
+                            Create Cards+
+                        </li>
+                    </Link>
                 </ul>
             </div>
         </>

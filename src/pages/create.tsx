@@ -15,18 +15,13 @@ const cardTemplate =
 const blankCardTemplate = "\n".repeat(3) + "---back---" + "\n".repeat(3);
 
 export default function Create() {
+    const utils = api.useContext();
     const deckList = api.deck.getAll.useQuery().data;
-
-    if (!deckList) {
-        return <main className="mt-4 flex flex-col items-center">Error fetching decklist</main>;
-    }
-
     const [mainDoc, setMainDoc] = useState<string>(cardTemplate);
     const [keybinding, setKeybinding] = useState<string>("standard");
-    const [deckIdSelect, setDeckIdSelect] = useState<string>(String(deckList[0]?.id));
+    const [deckIdSelect, setDeckIdSelect] = useState<string>(String(deckList?.[0]?.id));
 
     // Create Cards
-    const utils = api.useContext();
     const { mutate: createCards, isLoading: isCreatingCards } = api.card.createCards.useMutation({
         onSuccess: () => {
             utils.card.getAll.invalidate();
@@ -40,6 +35,10 @@ export default function Create() {
         });
         setMainDoc(blankCardTemplate);
     };
+
+    if (!deckList) {
+        return <main className="mt-4 flex flex-col items-center">Error fetching decklist</main>;
+    }
 
     return (
         <AppLayout>
