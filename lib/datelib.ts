@@ -6,8 +6,10 @@ export function addDaysToCardReviewDate(card: Card, daysToAdd: number): Card {
         throw new Error("Error adding days to card review date: card is null");
     }
     const newReviewDate = addDaysToReviewDate(card.reviewDate, daysToAdd);
-    card.reviewDate = newReviewDate;
-    return card;
+    return {
+        ...card,
+        reviewDate: newReviewDate,
+    } as Card;
 }
 
 export function dateDifferenceInDays(date1: Date, date2: Date): number {
