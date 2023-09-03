@@ -28,12 +28,29 @@ export const cardRouter = createTRPCRouter({
             },
         });
     }),
+    getReviewCardsByDeckId: publicProcedure.input(z.string()).query(({ ctx, input }) => {
+        const today = new Date();
+        return ctx.prisma.card.findMany({
+            where: {
+                deckId: input,
+                reviewDate: {
+                    lte: today,
+                },
+            },
+            orderBy: {
+                reviewDate: "desc",
+            }
+        });
+    }),
     getAll: publicProcedure.query(async ({ ctx }) => {
         try {
             return await ctx.prisma.card.findMany({
                 select: {
                     id: true,
                     createdAt: true,
+                    repetition: true,
+                    interval: true,
+                    eFactor: true,
                     reviewDate: true,
                     content: true,
                     userId: true,
@@ -61,6 +78,9 @@ export const cardRouter = createTRPCRouter({
                         userId: ctx.session.user.id,
                         deckId: input.deckId,
                         content: input.content,
+                        repetition: 0,
+                        interval: 0,
+                        eFactor: 0,
                         reviewDate: new Date(Date.now()),
                     },
                 });
@@ -69,7 +89,7 @@ export const cardRouter = createTRPCRouter({
                 console.log(err);
             }
         }),
-    edit: protectedProcedure
+    editContent: protectedProcedure
         .input(
             z.object({
                 id: z.string(),
@@ -90,6 +110,32 @@ export const cardRouter = createTRPCRouter({
                 return card;
             } catch(err) {
                 console.log(err);
+            }
+        }),
+    gradeCard: protectedProcedure
+        .input(
+            z.object({
+                id: z.string(),
+                repetition: z.number(),
+                interval: z.number(),
+                eFactor: z.number(),
+                reviewDate: z.date(),
+            })
+        )
+        .mutation(async ({ ctx, input }) => {
+            try {
+                const card = await ctx.prisma.card.update({
+                    where: {
+                        id: input.id,
+                    },
+                    data: {
+                        ...input,
+                    }
+                });
+                console.log("Graded card:", card);
+                return card;
+            } catch(err) {
+                console.log("Error grading card:", err);
             }
         }),
     delete: protectedProcedure

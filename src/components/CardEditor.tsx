@@ -14,7 +14,7 @@ export default function CardEditor({ card }: { card: Card }) {
     const [keybinding, setKeybinding] = useState<string>("standard");
 
     const ctx = api.useContext();
-    const { mutate: editCard, isLoading: isEditingCards } = api.card.edit.useMutation({
+    const { mutate: editCard, isLoading: isEditingCards } = api.card.editContent.useMutation({
         onSuccess: () => {
             ctx.card.getAll.invalidate();
         },

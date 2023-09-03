@@ -80,6 +80,9 @@ model Deck {
 model Card {
   id         String   @id @default(cuid())
   createdAt  DateTime @default(now())
+  repetition Int
+  interval   Int
+  eFactor    Int
   reviewDate DateTime
   content    String
   userId     String
