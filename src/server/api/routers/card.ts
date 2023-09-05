@@ -8,6 +8,9 @@ export const cardRouter = createTRPCRouter({
                 id: true,
                 createdAt: true,
                 reviewDate: true,
+                repetition: true,
+                interval: true,
+                eFactor: true,
                 content: true,
                 userId: true,
                 deckId: true,
@@ -69,6 +72,9 @@ export const cardRouter = createTRPCRouter({
             z.object({
                 deckId: z.string(),
                 content: z.string(),
+                repetition: z.number(),
+                interval: z.number(),
+                eFactor: z.number(),
             })
         )
         .mutation(async ({ ctx, input }) => {

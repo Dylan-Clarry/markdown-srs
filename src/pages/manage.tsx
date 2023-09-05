@@ -13,7 +13,7 @@ export default function Manage() {
     const cardIdToCardMap = new Map<string, Card>();
     const initialCardSelect = deckIdToCardListMap.get(deckSelect)?.[0]?.id as string;
     const [cardIdSelect, setCardIdSelect] = useState<string>(initialCardSelect);
-
+    
     if (!deckList) {
         return <main className="mt-4 flex flex-col items-center">Error fetching decklist</main>;
     }

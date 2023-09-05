@@ -32,6 +32,9 @@ export default function Create() {
         createCards({
             content: mainDoc,
             deckId: deckIdSelect,
+            repetition: 0,
+            interval: 0,
+            eFactor: 0,
         });
         setMainDoc(blankCardTemplate);
     };
