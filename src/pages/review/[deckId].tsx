@@ -1,4 +1,4 @@
-import { api } from "../../utils/api";
+import { api, RouterOutputs } from "../../utils/api";
 import { useRouter } from "next/router";
 import AppLayout from "~/pages/layouts/AppLayout";
 import { useState } from "react";
@@ -6,12 +6,22 @@ import MarkdownView from "~/components/MarkdownView";
 import { sm2, cardData } from "lib/sm2";
 import { addDaysToCardReviewDate } from "lib/datelib";
 
+type Card = NonNullable<RouterOutputs["card"]["getSchema"]>;
+
 export default function Review() {
+    const utils = api.useContext();
     const router = useRouter();
     const deckId = router.query.deckId;
     const cardList = api.card.getReviewCardsByDeckId.useQuery(deckId as string).data;
     const [currCardIdx, setCurrCardIdx] = useState<number>(0);
     const [isShowingFront, setIsShowingFront] = useState<boolean>(true);
+
+
+    const { mutate: gradeCard, isLoading: isGradingCard } = api.card.gradeCard.useMutation({
+        onSuccess: () => {
+            utils.card.getAll.invalidate();
+        },
+    });
 
     if (!cardList) {
         return (
@@ -31,10 +41,7 @@ export default function Review() {
 
     const handleGradeCard = (grade: number) => {
         const card = cardList[currCardIdx];
-
-        if (!card) {
-            return null;
-        }
+        if (!card) return null;
 
         const cardData: cardData = {
             repetition: card.repetition,
@@ -42,29 +49,30 @@ export default function Review() {
             eFactor: card.eFactor,
         };
 
-        // grade card on algorithm
         const gradedCardData = sm2(grade, cardData);
-
         const newCard = addDaysToCardReviewDate(card, gradedCardData.interval);
-
-        // add graded card data to card
         const gradedCard = {
             ...newCard,
             ...gradedCardData,
-        } as cardData;
+        } as Card;
 
-        // api call to update
+        console.log("graded card:", gradedCard);
+        
+        const stcard = gradeCard({
+            id: gradedCard.id,
+            repetition: gradedCard.repetition,
+            interval: gradedCard.interval,
+            eFactor: gradedCard.eFactor,
+            reviewDate: gradedCard.reviewDate,
+        });
 
-        // reset isShowingFront
+        console.log("card before and after:", card, stcard);
+        
         setIsShowingFront(true);
-
-        // Go to next card
         if (currCardIdx < cardList.length - 1) {
             setCurrCardIdx(currCardIdx + 1);
         }
     };
-
-    console.log("bingo bango bongo:", currCardIdx, cardList.length);
 
     if (currCardIdx === cardList.length - 1) {
         return (

@@ -82,7 +82,7 @@ model Card {
   createdAt  DateTime @default(now())
   repetition Int
   interval   Int
-  eFactor    Int
+  eFactor    Decimal
   reviewDate DateTime
   content    String
   userId     String

@@ -20,8 +20,8 @@ export default function Create() {
     const [mainDoc, setMainDoc] = useState<string>(cardTemplate);
     const [keybinding, setKeybinding] = useState<string>("standard");
     const [deckIdSelect, setDeckIdSelect] = useState<string>(String(deckList?.[0]?.id));
+    const [resetDoc, setResetDoc] = useState<number>(0);
 
-    // Create Cards
     const { mutate: createCards, isLoading: isCreatingCards } = api.card.createCards.useMutation({
         onSuccess: () => {
             utils.card.getAll.invalidate();
@@ -37,6 +37,7 @@ export default function Create() {
             eFactor: 0,
         });
         setMainDoc(blankCardTemplate);
+        setResetDoc(resetDoc === 1 ? 0 : 1);
     };
 
     if (!deckList) {
@@ -84,6 +85,7 @@ export default function Create() {
                         </div>
                     </div>
                     <MarkdownEditorAndRenderer
+                        key={resetDoc}
                         keybinding={keybinding}
                         mainDoc={mainDoc}
                         setMainDoc={setMainDoc}
