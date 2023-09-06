@@ -4,6 +4,7 @@ import AppLayout from "~/pages/layouts/AppLayout";
 import { useState } from "react";
 import MarkdownView from "~/components/MarkdownView";
 import { sm2, cardData } from "lib/sm2";
+import { addDaysToCardReviewDate } from "lib/datelib";
 
 export default function Review() {
     const router = useRouter();
@@ -28,50 +29,80 @@ export default function Review() {
     const cardFront = splitDoc[0] || "";
     const cardBack = splitDoc[1] || "";
 
-    const handleNextCard = () => {
-        if (currCardIdx < cardList.length) {
-            setCurrCardIdx(currCardIdx + 1);
-        }
-    };
-
     const handleGradeCard = (grade: number) => {
         const card = cardList[currCardIdx];
-        const cardData = {};
+
+        if (!card) {
+            return null;
+        }
+
+        const cardData: cardData = {
+            repetition: card.repetition,
+            interval: card.interval,
+            eFactor: card.eFactor,
+        };
 
         // grade card on algorithm
-        const gradedCardData = sm2(grade, {} as cardData);
+        const gradedCardData = sm2(grade, cardData);
+
+        const newCard = addDaysToCardReviewDate(card, gradedCardData.interval);
 
         // add graded card data to card
         const gradedCard = {
-            ...card,
+            ...newCard,
             ...gradedCardData,
         } as cardData;
 
         // api call to update
 
+        // reset isShowingFront
+        setIsShowingFront(true);
+
         // Go to next card
-        handleNextCard();
+        if (currCardIdx < cardList.length - 1) {
+            setCurrCardIdx(currCardIdx + 1);
+        }
     };
+
+    console.log("bingo bango bongo:", currCardIdx, cardList.length);
+
+    if (currCardIdx === cardList.length - 1) {
+        return (
+            <AppLayout>
+                <div>Review Complete.</div>
+            </AppLayout>
+        );
+    }
 
     return (
         <AppLayout>
             <div>
-                <div className="w-1/2 h-full">
+                <div className="h-full w-1/2">
                     <MarkdownView doc={isShowingFront ? cardFront : cardBack} />
                 </div>
 
                 <button
-                    className="rounded-md bg-green-500 px-1 pt-0.5 pb-1 text-white hover:bg-green-600"
+                    className="rounded-md bg-blue-500 px-1 pt-0.5 pb-1 text-white hover:bg-blue-600"
                     onClick={() => setIsShowingFront(!isShowingFront)}
                 >
                     Flip Card
                 </button>
-                <button
-                    className="rounded-md bg-blue-500 px-1 pt-0.5 pb-1 text-white hover:bg-blue-600"
-                    onClick={handleNextCard}
-                >
-                    Next Card
-                </button>
+                {!isShowingFront ? (
+                    <>
+                        <button
+                            className="rounded-md bg-green-500 px-1 pt-0.5 pb-1 text-white hover:bg-green-600"
+                            onClick={() => handleGradeCard(1)}
+                        >
+                            Pass
+                        </button>
+                        <button
+                            className="rounded-md bg-red-500 px-1 pt-0.5 pb-1 text-white hover:bg-red-600"
+                            onClick={() => handleGradeCard(4)}
+                        >
+                            Fail
+                        </button>
+                    </>
+                ) : null}
             </div>
         </AppLayout>
     );
