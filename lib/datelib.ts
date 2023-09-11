@@ -5,7 +5,7 @@ export function addDaysToCardReviewDate(card: Card, daysToAdd: number): Card {
     if(!card) {
         throw new Error("Error adding days to card review date: card is null");
     }
-    const newReviewDate = addDaysToReviewDate(card.reviewDate, daysToAdd);
+    const newReviewDate = setZeroTime(addDaysToReviewDate(card.reviewDate, daysToAdd));
     return {
         ...card,
         reviewDate: newReviewDate,
@@ -19,7 +19,7 @@ export function dateDifferenceInDays(date1: Date, date2: Date): number {
 }
 
 export function addDaysToReviewDate(reviewDate: Date, daysToAdd: number): Date {
-    const newReviewDate = new Date(reviewDate.getTime());
+    const newReviewDate = setZeroTime(new Date(reviewDate.getTime()));
     newReviewDate.setDate(newReviewDate.getDate() + daysToAdd);
     return newReviewDate;
 }
@@ -32,4 +32,11 @@ export function subtractOneDay(reviewDate: Date): Date {
     return addDaysToReviewDate(reviewDate, -1);
 }
 
-//
+export function setZeroTime(date: Date): Date {
+    return new Date(date.setHours(0, 0, 0, 0));
+}
+
+export function hasZeroTime(date: Date): boolean {
+    return date.getHours() === 0 && date.getMinutes() === 0 && date.getSeconds() === 0;
+}
+

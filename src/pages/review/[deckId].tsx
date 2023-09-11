@@ -1,3 +1,4 @@
+import { Prisma } from "@prisma/client";
 import { api, RouterOutputs } from "../../utils/api";
 import { useRouter } from "next/router";
 import AppLayout from "~/pages/layouts/AppLayout";
@@ -16,7 +17,6 @@ export default function Review() {
     const [currCardIdx, setCurrCardIdx] = useState<number>(0);
     const [isShowingFront, setIsShowingFront] = useState<boolean>(true);
 
-
     const { mutate: gradeCard, isLoading: isGradingCard } = api.card.gradeCard.useMutation({
         onSuccess: () => {
             utils.card.getAll.invalidate();
@@ -30,6 +30,16 @@ export default function Review() {
             </main>
         );
     }
+
+    if (cardList.length === 0) {
+        return (
+            <AppLayout>
+                <div>No cards to review today.</div>
+            </AppLayout>
+        );
+    }
+
+    console.log("CardList Length:", cardList.length);
 
     const splitDoc = cardList[currCardIdx]?.content.split("---back---");
     if (!splitDoc) {
@@ -46,28 +56,30 @@ export default function Review() {
         const cardData: cardData = {
             repetition: card.repetition,
             interval: card.interval,
-            eFactor: card.eFactor,
+            eFactor: parseFloat(card.eFactor.toString()),
         };
 
         const gradedCardData = sm2(grade, cardData);
         const newCard = addDaysToCardReviewDate(card, gradedCardData.interval);
         const gradedCard = {
             ...newCard,
-            ...gradedCardData,
+            repetition: gradedCardData.repetition,
+            interval: gradedCardData.interval,
+            eFactor: new Prisma.Decimal(gradedCardData.eFactor),
         } as Card;
 
         console.log("graded card:", gradedCard);
-        
+
         const stcard = gradeCard({
             id: gradedCard.id,
             repetition: gradedCard.repetition,
             interval: gradedCard.interval,
-            eFactor: gradedCard.eFactor,
+            eFactor: parseFloat(card.eFactor.toString()),
             reviewDate: gradedCard.reviewDate,
         });
 
         console.log("card before and after:", card, stcard);
-        
+
         setIsShowingFront(true);
         if (currCardIdx < cardList.length - 1) {
             setCurrCardIdx(currCardIdx + 1);
@@ -98,12 +110,14 @@ export default function Review() {
                 {!isShowingFront ? (
                     <>
                         <button
+                            disabled={isGradingCard}
                             className="rounded-md bg-green-500 px-1 pt-0.5 pb-1 text-white hover:bg-green-600"
                             onClick={() => handleGradeCard(1)}
                         >
                             Pass
                         </button>
                         <button
+                            disabled={isGradingCard}
                             className="rounded-md bg-red-500 px-1 pt-0.5 pb-1 text-white hover:bg-red-600"
                             onClick={() => handleGradeCard(4)}
                         >
@@ -115,3 +129,4 @@ export default function Review() {
         </AppLayout>
     );
 }
+
