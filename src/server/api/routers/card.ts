@@ -17,20 +17,6 @@ export const cardRouter = createTRPCRouter({
             },
         });
     }),
-    getById: publicProcedure.input(z.string()).query(({ ctx, input }) => {
-        return ctx.prisma.card.findFirst({
-            where: {
-                id: input,
-            },
-        });
-    }),
-    getCardsByDeckId: publicProcedure.input(z.string()).query(({ ctx, input }) => {
-        return ctx.prisma.card.findMany({
-            where: {
-                deckId: input,
-            },
-        });
-    }),
     getReviewCardsByDeckId: publicProcedure.input(z.string()).query(({ ctx, input }) => {
         const today = new Date();
         return ctx.prisma.card.findMany({
