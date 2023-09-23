@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure, protectedProcedure } from "../trpc";
+import { setZeroTime } from "lib/datelib";
 
 export const cardRouter = createTRPCRouter({
     getSchema: publicProcedure.query(async ({ ctx }) => {
@@ -19,6 +20,7 @@ export const cardRouter = createTRPCRouter({
     }),
     getReviewCardsByDeckId: publicProcedure.input(z.string()).query(({ ctx, input }) => {
         const today = new Date();
+        today.setUTCHours(0, 0, 0, 0);
         return ctx.prisma.card.findMany({
             where: {
                 deckId: input,
@@ -73,7 +75,7 @@ export const cardRouter = createTRPCRouter({
                         repetition: 0,
                         interval: 0,
                         eFactor: 0,
-                        reviewDate: new Date(Date.now()),
+                        reviewDate: setZeroTime(new Date(Date.now())),
                     },
                 });
                 return cards;

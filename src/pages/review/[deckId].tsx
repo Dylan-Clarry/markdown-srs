@@ -1,3 +1,4 @@
+import { GetServerSidePropsContext } from "next";
 import { Prisma } from "@prisma/client";
 import { api, RouterOutputs } from "../../utils/api";
 import { useRouter } from "next/router";
@@ -23,7 +24,7 @@ export default function Review() {
         },
     });
 
-    if (!cardList) {
+    if (!cardList || !deckId) {
         return (
             <main className="mt-4 flex flex-col items-center">
                 Error fetching cards with deckId: {deckId}
@@ -38,8 +39,6 @@ export default function Review() {
             </AppLayout>
         );
     }
-
-    console.log("CardList Length:", cardList.length);
 
     const splitDoc = cardList[currCardIdx]?.content.split("---back---");
     if (!splitDoc) {
@@ -59,7 +58,9 @@ export default function Review() {
             eFactor: parseFloat(card.eFactor.toString()),
         };
 
+
         const gradedCardData = sm2(grade, cardData);
+        console.log("Card data transform:", cardData, gradedCardData);
         const newCard = addDaysToCardReviewDate(card, gradedCardData.interval);
         const gradedCard = {
             ...newCard,
@@ -68,25 +69,24 @@ export default function Review() {
             eFactor: new Prisma.Decimal(gradedCardData.eFactor),
         } as Card;
 
-        console.log("graded card:", gradedCard);
 
         const stcard = gradeCard({
             id: gradedCard.id,
             repetition: gradedCard.repetition,
             interval: gradedCard.interval,
-            eFactor: parseFloat(card.eFactor.toString()),
+            eFactor: parseFloat(gradedCard.eFactor.toString()),
             reviewDate: gradedCard.reviewDate,
         });
 
         console.log("card before and after:", card, stcard);
 
         setIsShowingFront(true);
-        if (currCardIdx < cardList.length - 1) {
+        if (currCardIdx < cardList.length) {
             setCurrCardIdx(currCardIdx + 1);
         }
     };
 
-    if (currCardIdx === cardList.length - 1) {
+    if (currCardIdx === cardList.length) {
         return (
             <AppLayout>
                 <div>Review Complete.</div>
@@ -112,14 +112,14 @@ export default function Review() {
                         <button
                             disabled={isGradingCard}
                             className="rounded-md bg-green-500 px-1 pt-0.5 pb-1 text-white hover:bg-green-600"
-                            onClick={() => handleGradeCard(1)}
+                            onClick={() => handleGradeCard(4)}
                         >
                             Pass
                         </button>
                         <button
                             disabled={isGradingCard}
                             className="rounded-md bg-red-500 px-1 pt-0.5 pb-1 text-white hover:bg-red-600"
-                            onClick={() => handleGradeCard(4)}
+                            onClick={() => handleGradeCard(1)}
                         >
                             Fail
                         </button>
@@ -130,3 +130,24 @@ export default function Review() {
     );
 }
 
+export async function getServerSideProps(ctx: GetServerSidePropsContext) {
+    try {
+        const { deckId } = ctx.query;
+        const utils = api.useContext();
+        const response = await api.card.getReviewCardsByDeckId.useQuery(deckId as string);
+        const cardList = response.data;
+        console.log("CardListing:", cardList);
+        return {
+            props: {
+                cardList,
+            },
+        };
+    } catch (err) {
+        console.log("Error in getServerSideProps:", err);
+        return {
+            props: {
+                cardList: [],
+            },
+        };
+    }
+}
