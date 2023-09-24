@@ -1,4 +1,3 @@
-import { GetServerSidePropsContext } from "next";
 import { Prisma } from "@prisma/client";
 import { api, RouterOutputs } from "../../utils/api";
 import { useRouter } from "next/router";
@@ -40,6 +39,14 @@ export default function Review() {
         );
     }
 
+    if (currCardIdx === cardList.length) {
+        return (
+            <AppLayout>
+                <div>Review Complete.</div>
+            </AppLayout>
+        );
+    }
+
     const splitDoc = cardList[currCardIdx]?.content.split("---back---");
     if (!splitDoc) {
         // I hate this...
@@ -58,9 +65,7 @@ export default function Review() {
             eFactor: parseFloat(card.eFactor.toString()),
         };
 
-
         const gradedCardData = sm2(grade, cardData);
-        console.log("Card data transform:", cardData, gradedCardData);
         const newCard = addDaysToCardReviewDate(card, gradedCardData.interval);
         const gradedCard = {
             ...newCard,
@@ -69,8 +74,7 @@ export default function Review() {
             eFactor: new Prisma.Decimal(gradedCardData.eFactor),
         } as Card;
 
-
-        const stcard = gradeCard({
+        gradeCard({
             id: gradedCard.id,
             repetition: gradedCard.repetition,
             interval: gradedCard.interval,
@@ -78,21 +82,11 @@ export default function Review() {
             reviewDate: gradedCard.reviewDate,
         });
 
-        console.log("card before and after:", card, stcard);
-
         setIsShowingFront(true);
         if (currCardIdx < cardList.length) {
             setCurrCardIdx(currCardIdx + 1);
         }
     };
-
-    if (currCardIdx === cardList.length) {
-        return (
-            <AppLayout>
-                <div>Review Complete.</div>
-            </AppLayout>
-        );
-    }
 
     return (
         <AppLayout>
@@ -128,26 +122,4 @@ export default function Review() {
             </div>
         </AppLayout>
     );
-}
-
-export async function getServerSideProps(ctx: GetServerSidePropsContext) {
-    try {
-        const { deckId } = ctx.query;
-        const utils = api.useContext();
-        const response = await api.card.getReviewCardsByDeckId.useQuery(deckId as string);
-        const cardList = response.data;
-        console.log("CardListing:", cardList);
-        return {
-            props: {
-                cardList,
-            },
-        };
-    } catch (err) {
-        console.log("Error in getServerSideProps:", err);
-        return {
-            props: {
-                cardList: [],
-            },
-        };
-    }
 }

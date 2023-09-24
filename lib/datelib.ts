@@ -33,7 +33,7 @@ export function subtractOneDay(reviewDate: Date): Date {
 }
 
 export function setZeroTime(date: Date): Date {
-    return new Date(date.setHours(0, 0, 0, 0));
+    return new Date(date.setUTCHours(0, 0, 0, 0));
 }
 
 export function hasZeroTime(date: Date): boolean {
