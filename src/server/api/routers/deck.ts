@@ -25,7 +25,7 @@ export const deckRouter = createTRPCRouter({
             console.log("error", err);
         }
     }),
-    getDeckNamesWithCardCount: protectedProcedure.query(async ({ ctx }) => {
+    getAll: publicProcedure.query(async ({ ctx }) => {
         const decksWithCardCount = await ctx.prisma.deck.findMany({
             include: {
                 cards: {
@@ -38,24 +38,11 @@ export const deckRouter = createTRPCRouter({
         const deckList = decksWithCardCount.map((deck) => ({
             id: deck.id,
             name: deck.name,
-            count: deck.cards.length,
+            userid: deck.userId,
+            createdat: deck.createdAt,
+            cardcount: deck.cards.length,
         }));
         return deckList;
-    }),
-    getAll: publicProcedure.query(async ({ ctx }) => {
-        try {
-            return await ctx.prisma.deck.findMany({
-                select: {
-                    id: true,
-                    name: true,
-                },
-                orderBy: {
-                    createdAt: "desc",
-                },
-            });
-        } catch (err) {
-            console.log("error fetching decks (getAll):", err);
-        }
     }),
     create: protectedProcedure
         .input(

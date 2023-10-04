@@ -1,13 +1,15 @@
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { api } from "../../utils/api";
+import { api, RouterOutputs } from "../../utils/api";
 import SideBar from "~/components/SideBar";
 import { useEffect } from "react";
 
+type Deck = NonNullable<RouterOutputs["deck"]["getAll"][number]>;
+
 export default function AppLayout({ children }: any) {
     const { data: session, status } = useSession();
-    const deckList = api.deck.getAll.useQuery().data;
+    const deckList = api.deck.getAll.useQuery().data as Deck[];
     const name = session?.user.name || "";
     const router = useRouter();
 
