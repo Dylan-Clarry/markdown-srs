@@ -5,14 +5,14 @@ import remarkParse from "remark-parse";
 import remarkReact from "remark-react";
 import "github-markdown-css/github-markdown.css";
 
-export default function MarkdownView({ doc }: { doc: string }) {
+export default function MarkdownView({ doc, optionalClass = "" }: { doc: string, optionalClass?: string }) {
     const md = unified()
         .use(remarkParse)
         .use(remarkGfm)
         .use(remarkReact, { createElement: React.createElement as any })
         .processSync(doc).result;
     return (
-        <div className="markdown-body h-1/2 p-4">
+        <div className={optionalClass + "  h-1/2 p-4"}>
             <>{md}</>
         </div>
     );

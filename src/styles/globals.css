@@ -33,3 +33,7 @@ body {
     /*height: calc(100vh - 4.75rem);*/
     height: var(--markdown);
 }
+
+.c-markdown-review {
+    height: 40vh;
+}

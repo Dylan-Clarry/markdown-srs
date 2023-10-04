@@ -1,7 +1,6 @@
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure, protectedProcedure } from "../trpc";
 
-export const deckSchema = z.object({ id: z.string(), name: z.string() });
 
 export const deckRouter = createTRPCRouter({
     getSchema: publicProcedure.query(async ({ ctx }) => {
@@ -25,6 +24,23 @@ export const deckRouter = createTRPCRouter({
         } catch (err) {
             console.log("error", err);
         }
+    }),
+    getDeckNamesWithCardCount: protectedProcedure.query(async ({ ctx }) => {
+        const decksWithCardCount = await ctx.prisma.deck.findMany({
+            include: {
+                cards: {
+                    select: {
+                        id: true,
+                    }
+                }
+            }
+        });
+        const deckList = decksWithCardCount.map((deck) => ({
+            id: deck.id,
+            name: deck.name,
+            count: deck.cards.length,
+        }));
+        return deckList;
     }),
     getAll: publicProcedure.query(async ({ ctx }) => {
         try {
@@ -59,7 +75,30 @@ export const deckRouter = createTRPCRouter({
                 console.log(err);
             }
         }),
-    delete: protectedProcedure.input(deckSchema).mutation(async ({ ctx, input }) => {
+    rename: protectedProcedure
+        .input(
+            z.object({
+                id: z.string(),
+                name: z.string(),
+            })
+        )
+        .mutation(async({ ctx, input }) => {
+            await ctx.prisma.deck.update({
+                where: {
+                    id: input.id,
+                },
+                data: {
+                    name: input.name,
+                }
+            });
+        }),
+    delete: protectedProcedure
+        .input(
+            z.object({
+                id: z.string()
+            })
+        )
+        .mutation(async ({ ctx, input }) => {
         try {
             await ctx.prisma.deck.delete({
                 where: {

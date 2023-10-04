@@ -46,8 +46,8 @@ export default function MarkdownEditorAndRenderer({ keybinding, mainDoc, setMain
                 <div className="w-full" ref={markdownEditor as RefObject<HTMLDivElement>}></div>
             </div>
             <div className="flex w-full flex-col gap-4">
-                <MarkdownView doc={docFront} />
-                <MarkdownView doc={docBack} />
+                <MarkdownView optionalClass="markdown-body" doc={docFront} />
+                <MarkdownView optionalClass="markdown-body" doc={docBack} />
             </div>
         </div>
     );

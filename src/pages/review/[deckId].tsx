@@ -92,7 +92,7 @@ export default function Review() {
         <AppLayout>
             <div>
                 <div className="h-full w-1/2">
-                    <MarkdownView doc={isShowingFront ? cardFront : cardBack} />
+                    <MarkdownView optionalClass="c-markdown-review markdown-body" doc={isShowingFront ? cardFront : cardBack} />
                 </div>
 
                 <button

@@ -2,13 +2,16 @@ import { api, RouterOutputs } from "../utils/api";
 import Link from "next/link";
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
+import { faChevronDown, faChevronUp, faEllipsis } from "@fortawesome/free-solid-svg-icons";
 import DeleteDeckModal from "./DeleteDeckModal";
+import DeckOptionsModal from "./DeckOptionsModal";
 
-type Deck = RouterOutputs["deck"]["getSchema"];
+type Deck = NonNullable<RouterOutputs["deck"]["getSchema"]>;
+type DeckWithCount = NonNullable<RouterOutputs["deck"]["getDeckNamesWithCardCount"][number]>;
 
-export default function DeckList({ deckList }: { deckList: Deck[] }) {
-    const [newDeckName, setNewDeckName] = useState("");
+export default function SideBar({ deckList }: { deckList: Deck[] }) {
+    const [newDeckName, setNewDeckName] = useState<string>("");
+    const [currentSelection, setCurrentSelection] = useState<string>("");
     const utils = api.useContext();
     const createDeck = api.deck.create.useMutation({
         onMutate: async (newEntry) => {
@@ -21,6 +24,9 @@ export default function DeckList({ deckList }: { deckList: Deck[] }) {
             await utils.deck.getAll.invalidate();
         },
     });
+    const deckNamesAndCardCount = api.deck.getDeckNamesWithCardCount.useQuery()
+        .data as DeckWithCount[];
+    console.log("couns:", deckNamesAndCardCount);
 
     const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -51,11 +57,18 @@ export default function DeckList({ deckList }: { deckList: Deck[] }) {
             </form>
             <div className="mt-3 flex flex-col gap-4">
                 <ul>
-                    {deckList?.map((deck: Deck, idx: number) => {
-                        return <CollapsableList deck={deck} idx={idx} key={idx} />;
+                    {deckNamesAndCardCount?.map((deck: DeckWithCount, idx: number) => {
+                        return (
+                            <SideBarDeckItem
+                                deck={deck}
+                                idx={idx}
+                                key={deck.id}
+                                isSelected={currentSelection === deck.id}
+                            />
+                        );
                     })}
                     <Link href="/manage">
-                        <li className="mt-1 w-1/2 rounded-md bg-cyan-700 pl-1 pt-0.5 pb-1 hover:cursor-pointer hover:bg-cyan-800">
+                        <li className="mt-2 w-1/2 rounded-md bg-cyan-700 pl-1 pt-0.5 pb-1 hover:cursor-pointer hover:bg-cyan-800">
                             Manage Cards
                         </li>
                     </Link>
@@ -67,6 +80,28 @@ export default function DeckList({ deckList }: { deckList: Deck[] }) {
                 </ul>
             </div>
         </>
+    );
+}
+
+function SideBarDeckItem({ deck, idx, isSelected }: { deck: DeckWithCount; idx: number; isSelected: boolean; }) {
+    const [modalIsVisible, setModalIsVisible] = useState<boolean>(false);
+    const handleOnClose = () => setModalIsVisible(false);
+    return (
+        <li className="flex justify-between rounded-md py-0.5 px-1 hover:bg-neutral-700" key={idx}>
+            <Link className="hover:cursor-pointer" href={"review/" + deck.id}>
+                {deck.name}
+                <span className="ml-1 rounded-md bg-teal-600 px-1">{deck.count}</span>
+            </Link>
+            <div className="hover:cursor-pointer" onClick={() => setModalIsVisible(true)}>
+                <FontAwesomeIcon icon={faEllipsis} />
+            </div>
+            <DeckOptionsModal
+                onClose={handleOnClose}
+                visible={modalIsVisible}
+                deckName={deck.name}
+                deckId={deck.id}
+            />
+        </li>
     );
 }
 
