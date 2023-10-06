@@ -23,9 +23,7 @@ export default function SideBar({ deckList }: { deckList: Deck[] }) {
             await utils.deck.getAll.invalidate();
         },
     });
-    const deckNamesAndCardCount = api.deck.getAll.useQuery()
-        .data as Deck[];
-    console.log("couns:", deckNamesAndCardCount);
+    const deckNamesAndCardCount = api.deck.getAll.useQuery().data as Deck[];
 
     const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -82,14 +80,16 @@ export default function SideBar({ deckList }: { deckList: Deck[] }) {
     );
 }
 
-function SideBarDeckItem({ deck, idx, isSelected }: { deck: Deck; idx: number; isSelected: boolean; }) {
+function SideBarDeckItem({ deck, idx, isSelected }: { deck: Deck; idx: number; isSelected: boolean }) {
     const [modalIsVisible, setModalIsVisible] = useState<boolean>(false);
     const handleOnClose = () => setModalIsVisible(false);
     return (
         <li className="flex justify-between rounded-md py-0.5 px-1 hover:bg-neutral-700" key={idx}>
             <Link className="hover:cursor-pointer" href={"review/" + deck.id}>
                 {deck.name}
-                <span className="ml-1 rounded-md bg-teal-600 px-1">{deck.cardcount}</span>
+                {deck.cardcount > 0 ? (
+                    <span className="ml-1 rounded-md bg-teal-600 px-1">{deck.cardcount}</span>
+                ) : null}
             </Link>
             <div className="hover:cursor-pointer" onClick={() => setModalIsVisible(true)}>
                 <FontAwesomeIcon icon={faEllipsis} />

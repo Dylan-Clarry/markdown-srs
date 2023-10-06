@@ -1,7 +1,6 @@
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure, protectedProcedure } from "../trpc";
 
-
 export const deckRouter = createTRPCRouter({
     getSchema: publicProcedure.query(async ({ ctx }) => {
         return await ctx.prisma.deck.findFirst({
@@ -26,14 +25,21 @@ export const deckRouter = createTRPCRouter({
         }
     }),
     getAll: publicProcedure.query(async ({ ctx }) => {
+        const today = new Date();
+        today.setUTCHours(0, 0, 0, 0);
         const decksWithCardCount = await ctx.prisma.deck.findMany({
             include: {
                 cards: {
                     select: {
                         id: true,
-                    }
-                }
-            }
+                    },
+                    where: {
+                        reviewDate: {
+                            lte: today,
+                        },
+                    },
+                },
+            },
         });
         const deckList = decksWithCardCount.map((deck) => ({
             id: deck.id,
@@ -69,31 +75,31 @@ export const deckRouter = createTRPCRouter({
                 name: z.string(),
             })
         )
-        .mutation(async({ ctx, input }) => {
+        .mutation(async ({ ctx, input }) => {
             await ctx.prisma.deck.update({
                 where: {
                     id: input.id,
                 },
                 data: {
                     name: input.name,
-                }
+                },
             });
         }),
     delete: protectedProcedure
         .input(
             z.object({
-                id: z.string()
+                id: z.string(),
             })
         )
         .mutation(async ({ ctx, input }) => {
-        try {
-            await ctx.prisma.deck.delete({
-                where: {
-                    id: input.id,
-                },
-            });
-        } catch (err) {
-            console.log("error", err);
-        }
-    }),
+            try {
+                await ctx.prisma.deck.delete({
+                    where: {
+                        id: input.id,
+                    },
+                });
+            } catch (err) {
+                console.log("error", err);
+            }
+        }),
 });

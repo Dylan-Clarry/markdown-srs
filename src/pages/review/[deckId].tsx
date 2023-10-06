@@ -19,7 +19,9 @@ export default function Review() {
 
     const { mutate: gradeCard, isLoading: isGradingCard } = api.card.gradeCard.useMutation({
         onSuccess: () => {
-            utils.card.getAll.invalidate();
+            // This line invalidates the entire router instead of just a single query
+            // This allows the card count on the sidebar next to the deck to update while reviewing
+            utils.invalidate();
         },
     });
 
