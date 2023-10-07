@@ -1,6 +1,6 @@
+import { useState } from "react";
 import { api, RouterOutputs } from "../utils/api";
 import Link from "next/link";
-import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown, faChevronUp, faEllipsis } from "@fortawesome/free-solid-svg-icons";
 import DeleteDeckModal from "./DeleteDeckModal";

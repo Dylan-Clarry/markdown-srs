@@ -1,9 +1,10 @@
 import { api, RouterOutputs } from "../utils/api";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AppLayout from "~/pages/layouts/AppLayout";
 import MarkdownEditorAndRenderer from "../components/MarkdownEditorAndRenderer";
 
 type Deck = RouterOutputs["deck"]["getSchema"];
+type KeyBinding = NonNullable<RouterOutputs["user"]["getKeybinding"]>;
 
 const cardTemplate =
     '```js\nconsole.log("Hello World");\n```' +
@@ -18,15 +19,30 @@ export default function Create() {
     const utils = api.useContext();
     const deckList = api.deck.getAll.useQuery().data;
     const [mainDoc, setMainDoc] = useState<string>(cardTemplate);
-    const [keybinding, setKeybinding] = useState<string>("standard");
+    const [keyBinding, setKeyBinding] = useState("standard");
     const [deckIdSelect, setDeckIdSelect] = useState<string>(String(deckList?.[0]?.id));
     const [resetDoc, setResetDoc] = useState<number>(0);
 
+    const keyBindingData = api.user.getKeybinding.useQuery().data;
+    useEffect(() => {
+        const userKeyBinding = keyBindingData?.keyBinding;
+        if (userKeyBinding) {
+            setKeyBinding(userKeyBinding);
+        }
+    }, [keyBindingData]);
+
     const { mutate: createCards, isLoading: isCreatingCards } = api.card.createCards.useMutation({
         onSuccess: () => {
-            utils.card.getAll.invalidate();
+            utils.invalidate();
         },
     });
+
+    const { mutate: updateKeyBinding } =
+        api.user.updateKeybinding.useMutation({
+            onSuccess: () => {
+                utils.user.getKeybinding.invalidate();
+            },
+        });
 
     const handleCreateCards = () => {
         createCards({
@@ -38,6 +54,14 @@ export default function Create() {
         });
         setMainDoc(blankCardTemplate);
         setResetDoc(resetDoc === 1 ? 0 : 1);
+    };
+
+    const handleSetKeyBinding = (e: any) => {
+        const keyBindingValue = e.target.value;
+        setKeyBinding(keyBindingValue);
+        updateKeyBinding({
+            keyBinding: keyBindingValue,
+        });
     };
 
     if (!deckList) {
@@ -71,22 +95,22 @@ export default function Create() {
                             </div>
                             <div>
                                 <select
+                                    value={keyBinding}
                                     className="rounded-md bg-neutral-800 p-1"
-                                    onChange={(e) => setKeybinding(e.target.value)}
-                                    defaultValue="standard"
+                                    onChange={handleSetKeyBinding}
                                     name="keybinding"
                                     id="keybinding"
                                 >
-                                    <option value="standard">Standard</option>
-                                    <option value="vim">Vim</option>
-                                    <option value="emacs">Emacs</option>
+                                    <option value="standard" key={0}>Standard</option>
+                                    <option value="vim" key={1}>Vim</option>
+                                    <option value="emacs" key={2}>Emacs</option>
                                 </select>
                             </div>
                         </div>
                     </div>
                     <MarkdownEditorAndRenderer
                         key={resetDoc}
-                        keybinding={keybinding}
+                        keybinding={keyBinding}
                         mainDoc={mainDoc}
                         setMainDoc={setMainDoc}
                     />
