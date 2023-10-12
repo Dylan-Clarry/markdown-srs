@@ -21,7 +21,8 @@ export default function Review() {
         onSuccess: () => {
             // This line invalidates the entire router instead of just a single query
             // This allows the card count on the sidebar next to the deck to update while reviewing
-            utils.invalidate();
+            //utils.invalidate();
+            utils.deck.getAll.invalidate();
         },
     });
 
