@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import AppLayout from "~/pages/layouts/AppLayout";
 import { useState } from "react";
 import MarkdownView from "~/components/MarkdownView";
-import { sm2, cardData } from "lib/sm2";
+import { sm2CardData, cardData, sm2 } from "lib/sm2";
 import { addDaysToCardReviewDate } from "lib/datelib";
 
 type Card = NonNullable<RouterOutputs["card"]["getSchema"]>;
@@ -13,7 +13,7 @@ export default function Review() {
     const utils = api.useContext();
     const router = useRouter();
     const deckId = router.query.deckId;
-    const cardList = api.card.getReviewCardsByDeckId.useQuery(deckId as string).data;
+    const cardList = api.card.getReviewCardsByDeckId.useQuery(deckId as string).data as Card[];
     const [currCardIdx, setCurrCardIdx] = useState<number>(0);
     const [isShowingFront, setIsShowingFront] = useState<boolean>(true);
 
@@ -22,7 +22,8 @@ export default function Review() {
             // This line invalidates the entire router instead of just a single query
             // This allows the card count on the sidebar next to the deck to update while reviewing
             //utils.invalidate();
-            utils.deck.getAll.invalidate();
+            utils.card.getAll.invalidate();
+            utils.deck.invalidate();
         },
     });
 
@@ -62,20 +63,7 @@ export default function Review() {
         const card = cardList[currCardIdx];
         if (!card) return null;
 
-        const cardData: cardData = {
-            repetition: card.repetition,
-            interval: card.interval,
-            eFactor: parseFloat(card.eFactor.toString()),
-        };
-
-        const gradedCardData = sm2(grade, cardData);
-        const newCard = addDaysToCardReviewDate(card, gradedCardData.interval);
-        const gradedCard = {
-            ...newCard,
-            repetition: gradedCardData.repetition,
-            interval: gradedCardData.interval,
-            eFactor: new Prisma.Decimal(gradedCardData.eFactor),
-        } as Card;
+        const gradedCard = sm2(grade, card);
 
         gradeCard({
             id: gradedCard.id,
@@ -86,6 +74,11 @@ export default function Review() {
         });
 
         setIsShowingFront(true);
+
+        if(gradedCard.interval === 1) {
+            cardList.push(gradedCard);
+        }
+
         if (currCardIdx < cardList.length) {
             setCurrCardIdx(currCardIdx + 1);
         }
@@ -93,7 +86,7 @@ export default function Review() {
 
     return (
         <AppLayout>
-            <div>
+            <div className="flex items-center justify-center">
                 <div className="h-full w-1/2">
                     <MarkdownView optionalClass="c-markdown-review markdown-body" doc={isShowingFront ? cardFront : cardBack} />
                 </div>

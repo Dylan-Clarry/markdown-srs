@@ -1,5 +1,5 @@
 export {};
-import { sm2, cardData } from "./sm2";
+import { sm2CardData, cardData } from "./sm2";
 
 type Algorithm = (grade: number, data: cardData) => cardData;
 
@@ -44,4 +44,4 @@ function testAlgorithm(algorithmName: string, algorithm: Algorithm) {
     });
 }
 
-testAlgorithm("sm2", sm2);
+testAlgorithm("sm2", sm2CardData);
