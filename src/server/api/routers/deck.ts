@@ -32,11 +32,61 @@ export const deckRouter = createTRPCRouter({
                 cards: {
                     select: {
                         id: true,
+                        isNew: true,
                     },
                     where: {
                         reviewDate: {
                             lte: today,
                         },
+                    },
+                },
+            },
+        });
+        const deckList = decksWithCardCount.map((deck) => {
+            const newCardCount = deck.cards.filter(card => card.isNew).length;
+            const reviewCardCount = deck.cards.length - newCardCount;
+            return {
+                id: deck.id,
+                name: deck.name,
+                userid: deck.userId,
+                createdat: deck.createdAt,
+                reviewcardcount: reviewCardCount,
+                newcardcount: newCardCount,
+            }
+        });
+        return deckList;
+    }),
+    getAllForSidebar: publicProcedure.query(async ({ ctx }) => {
+        const today = new Date();
+        today.setUTCHours(0, 0, 0, 0);
+        const decksWithCardCount = await ctx.prisma.deck.findMany({
+            include: {
+                cards: {
+                    select: {
+                        id: true,
+                        isNew: true,
+                    },
+                    where: {
+                        reviewDate: {
+                            lte: today,
+                        },
+                        isNew: false,
+                    },
+                },
+            },
+        });
+        const decksWithNew = await ctx.prisma.deck.findMany({
+            include: {
+                cards: {
+                    select: {
+                        id: true,
+                        isNew: true,
+                    },
+                    where: {
+                        reviewDate: {
+                            lte: today,
+                        },
+                        isNew: true,
                     },
                 },
             },

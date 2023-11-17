@@ -83,12 +83,16 @@ export default function SideBar({ deckList }: { deckList: Deck[] }) {
 function SideBarDeckItem({ deck, idx, isSelected }: { deck: Deck; idx: number; isSelected: boolean }) {
     const [modalIsVisible, setModalIsVisible] = useState<boolean>(false);
     const handleOnClose = () => setModalIsVisible(false);
+    console.log("cardcount:", deck.reviewcardcount, deck.newcardcount);
     return (
         <li className="flex justify-between rounded-md py-0.5 px-1 hover:bg-neutral-700" key={idx}>
             <Link className="hover:cursor-pointer" href={"review/" + deck.id}>
                 {deck.name}
-                {deck.cardcount > 0 ? (
-                    <span className="ml-1 rounded-md bg-teal-600 px-1">{deck.cardcount}</span>
+                {deck.reviewcardcount > 0 ? (
+                    <span className="ml-1 rounded-md bg-teal-500 px-1">{deck.reviewcardcount}</span>
+                ) : null}
+                {deck.newcardcount > 0 ? (
+                    <span className="ml-1 rounded-md bg-amber-600 px-1">{deck.newcardcount}</span>
                 ) : null}
             </Link>
             <div className="hover:cursor-pointer" onClick={() => setModalIsVisible(true)}>

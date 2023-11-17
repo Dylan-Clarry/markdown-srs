@@ -82,6 +82,7 @@ model Card {
   content    String
   userId     String
   deckId     String
+  isNew      Boolean  @default(true)
   user       User     @relation(fields: [userId], references: [id])
   deck       Deck     @relation(fields: [deckId], references: [id])
 }
