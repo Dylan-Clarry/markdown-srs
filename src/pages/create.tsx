@@ -2,6 +2,7 @@ import { api, RouterOutputs } from "../utils/api";
 import { useEffect, useState } from "react";
 import AppLayout from "~/pages/layouts/AppLayout";
 import MarkdownEditorAndRenderer from "../components/MarkdownEditorAndRenderer";
+import AltLayout from "./layouts/AltLayout";
 
 type Deck = RouterOutputs["deck"]["getSchema"];
 type KeyBinding = NonNullable<RouterOutputs["user"]["getKeybinding"]>;
@@ -69,7 +70,7 @@ export default function Create() {
     }
 
     return (
-        <AppLayout>
+        <AltLayout>
             <div className="h-full">
                 <div className="flex flex-col px-4">
                     <div className="c-top-bar pt-2">
@@ -125,6 +126,6 @@ export default function Create() {
                     </div>
                 </div>
             </div>
-        </AppLayout>
+        </AltLayout>
     );
 }

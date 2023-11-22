@@ -5,7 +5,7 @@
 :root {
     --top-bar: 5vh;
     --bot-bar: 7vh;
-    --markdown: calc(100vh - var(--top-bar) - var(--bot-bar));
+    --markdown: calc(100vh - var(--top-bar) - var(--bot-bar) - 4vh);
 }
 
 body, html {
