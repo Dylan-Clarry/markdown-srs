@@ -2,6 +2,7 @@ import { api, RouterOutputs } from "../utils/api";
 import { useState } from "react";
 import AppLayout from "~/pages/layouts/AppLayout";
 import CardEditor from "../components/CardEditor";
+import AltLayout from "./layouts/AltLayout";
 
 type Card = RouterOutputs["card"]["getSchema"];
 
@@ -35,7 +36,7 @@ export default function Manage() {
     }
 
     return (
-        <AppLayout>
+        <AltLayout>
             <div className="mt-2 flex h-screen">
                 <div className="h-full w-60 border-r border-neutral-800 px-4">
                     {deckList.map((deck) => (
@@ -89,6 +90,6 @@ export default function Manage() {
                     </div>
                 </div>
             </div>
-        </AppLayout>
+        </AltLayout>
     );
 }

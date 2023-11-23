@@ -28,23 +28,43 @@ export default function AltLayout({ children }: any) {
 
     return (
         <main className="px-8">
-            <div className="w-60 px-4">
+            <div className="w-full px-4">
                 <TopBar name={name} />
             </div>
-            <div className="flex-1">
-                {children}
-            </div>
+            <div className="flex-1">{children}</div>
         </main>
     );
 }
 
 function TopBar({ name }: { name: string }) {
     return (
-        <div>
+        <div className="mt-2 flex w-full items-center justify-between">
             <span className="flex items-center">
-                <span className="mr-2 text-xl"><Link href="/">🚀</Link></span>
+                <span className="mr-2 text-xl">
+                    <Link href="/">🚀</Link>
+                </span>
                 <p>{name}</p>
             </span>
+            <ul className="flex gap-4">
+                <Link href="/decks">
+                    <li>Decks</li>
+                </Link>
+                <Link href="/create">
+                    <li>Create</li>
+                </Link>
+                <Link href="/manage">
+                    <li>Manage</li>
+                </Link>
+            </ul>
+            <button
+                type="button"
+                className="block rounded-md bg-neutral-800 px-2 pt-0.5 pb-1 hover:bg-neutral-700"
+                onClick={() => {
+                    signOut().catch(console.log);
+                }}
+            >
+                Sign Out
+            </button>
         </div>
     );
 }
@@ -53,7 +73,9 @@ function UsernameAndSignOut({ name }: { name: string }) {
     return (
         <div className="mt-2 flex w-full items-center justify-between">
             <span className="flex items-center">
-                <span className="mr-2 text-xl"><Link href="/">🚀</Link></span>
+                <span className="mr-2 text-xl">
+                    <Link href="/">🚀</Link>
+                </span>
                 <p>{name}</p>
             </span>
             <button
