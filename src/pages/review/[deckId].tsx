@@ -7,6 +7,7 @@ import MarkdownView from "~/components/MarkdownView";
 import { sm2CardData, cardData, sm2 } from "lib/sm2";
 import { addDaysToCardReviewDate } from "lib/datelib";
 
+type Deck = NonNullable<RouterOutputs["deck"]["getAll"][number]>;
 type Card = NonNullable<RouterOutputs["card"]["getSchema"]>;
 
 export default function Review() {
@@ -50,6 +51,8 @@ export default function Review() {
             </AppLayout>
         );
     }
+
+    const deckNamesAndCardCount = api.deck.getAll.useQuery().data as Deck[];
 
     const splitDoc = cardList[currCardIdx]?.content.split("---back---");
     if (!splitDoc) {

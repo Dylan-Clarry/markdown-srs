@@ -56,49 +56,46 @@ export const deckRouter = createTRPCRouter({
         });
         return deckList;
     }),
-    getAllForSidebar: publicProcedure.query(async ({ ctx }) => {
-        const today = new Date();
-        today.setUTCHours(0, 0, 0, 0);
-        const decksWithCardCount = await ctx.prisma.deck.findMany({
-            include: {
-                cards: {
-                    select: {
-                        id: true,
-                        isNew: true,
-                    },
-                    where: {
-                        reviewDate: {
-                            lte: today,
+    getById: protectedProcedure
+        .input(
+            z.object({
+                id: z.string(),
+            })
+        )
+        .query(async ({ ctx, input }) => {
+            const today = new Date();
+            today.setUTCHours(0, 0, 0, 0);
+            const deck = await ctx.prisma.deck.findFirst({
+                where: {
+                    id: input.id,
+                },
+                include: {
+                    cards: {
+                        select: {
+                            id: true,
+                            isNew: true,
                         },
-                        isNew: false,
+                        where: {
+                            reviewDate: {
+                                lte: today,
+                            },
+                        },
                     },
                 },
-            },
-        });
-        const decksWithNew = await ctx.prisma.deck.findMany({
-            include: {
-                cards: {
-                    select: {
-                        id: true,
-                        isNew: true,
-                    },
-                    where: {
-                        reviewDate: {
-                            lte: today,
-                        },
-                        isNew: true,
-                    },
-                },
-            },
-        });
-        const deckList = decksWithCardCount.map((deck) => ({
-            id: deck.id,
-            name: deck.name,
-            userid: deck.userId,
-            createdat: deck.createdAt,
-            cardcount: deck.cards.length,
-        }));
-        return deckList;
+            });
+            if(!deck) {
+                throw new Error("Deck with id " + input.id + " not found");
+            }
+            const newCardCount = deck.cards.filter(card => card.isNew).length;
+            const reviewCardCount = deck.cards.length - newCardCount;
+            return {
+                id: deck.id,
+                name: deck.name,
+                userid: deck.userId,
+                createdat: deck.createdAt,
+                reviewcardcount: reviewCardCount,
+                newcardcount: newCardCount,
+            }
     }),
     create: protectedProcedure
         .input(
