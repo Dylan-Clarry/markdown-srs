@@ -1,7 +1,7 @@
 import { Prisma } from "@prisma/client";
 import { api, RouterOutputs } from "../../utils/api";
 import { useRouter } from "next/router";
-import AppLayout from "~/pages/layouts/AppLayout";
+import AltLayout from "~/pages/layouts/AltLayout";
 import { useState } from "react";
 import MarkdownView from "~/components/MarkdownView";
 import { sm2CardData, cardData, sm2 } from "lib/sm2";
@@ -13,7 +13,7 @@ type Card = NonNullable<RouterOutputs["card"]["getSchema"]>;
 export default function Review() {
     const utils = api.useContext();
     const router = useRouter();
-    const deckId = router.query.deckId;
+    const deckId = router.query.deckId as string;
     const cardList = api.card.getReviewCardsByDeckId.useQuery(deckId as string).data as Card[];
     const [currCardIdx, setCurrCardIdx] = useState<number>(0);
     const [isShowingFront, setIsShowingFront] = useState<boolean>(true);
@@ -28,6 +28,10 @@ export default function Review() {
         },
     });
 
+    console.log("deck: ", deckId);
+    const deckNameAndCardCount = api.deck.getById.useQuery({ id: deckId }).data;
+    console.log("deck: ", deckNameAndCardCount);
+
     if (!cardList || !deckId) {
         return (
             <main className="mt-4 flex flex-col items-center">
@@ -38,29 +42,28 @@ export default function Review() {
 
     if (cardList.length === 0) {
         return (
-            <AppLayout>
+            <AltLayout>
                 <div>No cards to review today.</div>
-            </AppLayout>
+            </AltLayout>
         );
     }
 
     if (currCardIdx === cardList.length) {
         return (
-            <AppLayout>
+            <AltLayout>
                 <div>Review Complete.</div>
-            </AppLayout>
+            </AltLayout>
         );
     }
 
-    const deckNamesAndCardCount = api.deck.getAll.useQuery().data as Deck[];
-
     const splitDoc = cardList[currCardIdx]?.content.split("---back---");
     if (!splitDoc) {
-        // I hate this...
+        // I hate this... but tis necessary
         return;
     }
     const cardFront = splitDoc[0] || "";
     const cardBack = splitDoc[1] || "";
+    const cardFull = cardFront + " --- " + cardBack;
 
     const handleGradeCard = (grade: number) => {
         const card = cardList[currCardIdx];
@@ -78,7 +81,7 @@ export default function Review() {
 
         setIsShowingFront(true);
 
-        if(gradedCard.interval === 1) {
+        if (gradedCard.interval === 1) {
             cardList.push(gradedCard);
         }
 
@@ -88,37 +91,42 @@ export default function Review() {
     };
 
     return (
-        <AppLayout>
+        <AltLayout>
             <div className="flex items-center justify-center">
-                <div className="h-full w-1/2">
-                    <MarkdownView optionalClass="c-markdown-review markdown-body" doc={isShowingFront ? cardFront : cardBack} />
-                </div>
+                <div className="w-1/2 flex flex-col">
+                    <div className="mt-16 h-full w-full">
+                        <MarkdownView
+                            optionalClass="c-markdown-review markdown-body"
+                            doc={isShowingFront ? cardFront : cardFull}
+                        />
+                    </div>
 
-                <button
-                    className="rounded-md bg-blue-500 px-1 pt-0.5 pb-1 text-white hover:bg-blue-600"
-                    onClick={() => setIsShowingFront(!isShowingFront)}
-                >
-                    Flip Card
-                </button>
-                {!isShowingFront ? (
-                    <>
-                        <button
-                            disabled={isGradingCard}
-                            className="rounded-md bg-green-500 px-1 pt-0.5 pb-1 text-white hover:bg-green-600"
-                            onClick={() => handleGradeCard(4)}
-                        >
-                            Pass
-                        </button>
-                        <button
-                            disabled={isGradingCard}
-                            className="rounded-md bg-red-500 px-1 pt-0.5 pb-1 text-white hover:bg-red-600"
-                            onClick={() => handleGradeCard(1)}
-                        >
-                            Fail
-                        </button>
-                    </>
-                ) : null}
+                    <button
+                        className="rounded-md mt-4 mx-auto w-1/2 bg-blue-500 px-1 pt-0.5 pb-1 text-white hover:bg-blue-600"
+                        onClick={() => setIsShowingFront(!isShowingFront)}
+                    >
+                        Flip Card
+                    </button>
+                    {!isShowingFront ? (
+                        <div className="mt-12 mx-auto flex gap-4">
+                            <button
+                                disabled={isGradingCard}
+                                className="rounded-md w-32 bg-green-500 px-1 pt-0.5 pb-1 text-white hover:bg-green-600"
+                                onClick={() => handleGradeCard(4)}
+                            >
+                                Pass - 1
+                            </button>
+                            <button
+                                disabled={isGradingCard}
+                                className="rounded-md w-32 bg-red-500 px-1 pt-0.5 pb-1 text-white hover:bg-red-600"
+                                onClick={() => handleGradeCard(1)}
+                            >
+                                Fail - 2
+                            </button>
+                        </div>
+                    ) : null}
+                </div>
             </div>
-        </AppLayout>
+        </AltLayout>
     );
 }
