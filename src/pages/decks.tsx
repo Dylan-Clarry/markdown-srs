@@ -73,10 +73,10 @@ function DecklistItem({ deck, idx }: { deck: Deck; idx: number }) {
             <Link className="hover:cursor-pointer" href={"review/" + deck.id}>
                 {deck.name}
                 {deck.reviewcardcount > 0 ? (
-                    <span className="ml-1 rounded-md bg-teal-500 px-1">{deck.reviewcardcount}</span>
+                    <span className="ml-1 rounded-md bg-blue-500 px-1">{deck.reviewcardcount}</span>
                 ) : null}
                 {deck.newcardcount > 0 ? (
-                    <span className="ml-1 rounded-md bg-amber-600 px-1">{deck.newcardcount}</span>
+                    <span className="ml-1 rounded-md bg-green-500 px-1">{deck.newcardcount}</span>
                 ) : null}
             </Link>
             <div className="hover:cursor-pointer" onClick={() => setModalIsVisible(true)}>
